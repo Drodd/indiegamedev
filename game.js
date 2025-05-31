@@ -6,9 +6,9 @@ let gameState = {
     month: 6, // 当前月份
     year: 2025, // 当前年份
     teamConfidence: {
-        artist: 100, // 美术信心
-        programmer: 100, // 程序信心
-        designer: 100 // 策划信心
+        artist: 60, // 美术信心
+        programmer: 60, // 程序信心
+        designer: 60 // 策划信心
     },
     teamMembers: {
         artist: true, // 美术是否在团队中
@@ -54,15 +54,15 @@ const characterConfig = {
 
 // 根据信心值获取情绪状态
 function getEmotionFromConfidence(confidence) {
-    if (confidence >= 70) return 'happy';
-    if (confidence >= 30) return 'doubt';
+    if (confidence >= 45) return 'happy';
+    if (confidence >= 20) return 'doubt';
     return 'sad';
 }
 
 // 根据信心值获取状态文字和样式
 function getStatusFromConfidence(confidence) {
-    if (confidence >= 70) return { text: '信心十足', class: 'status-high' };
-    if (confidence >= 30) return { text: '有点怀疑', class: 'status-medium' };
+    if (confidence >= 45) return { text: '信心十足', class: 'status-high' };
+    if (confidence >= 20) return { text: '有点怀疑', class: 'status-medium' };
     if (confidence >= 0) return { text: '爱不起来', class: 'status-medium' };
     return { text: '信心不足', class: 'status-low' };
 }
@@ -293,7 +293,7 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"别慌！我们立即调整核心玩法，走差异化路线，让我们的游戏更独特！\"",
-                effects: { progress: -15, money: -30, artist: 10, programmer: -10, designer: 15 }
+                effects: { progress: -15, money: -30, artist: 5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"我们坚持原计划，专注于把游戏做得更精致，品质才是王道！\"",
@@ -316,11 +316,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"大家加把劲！我们花点钱做个精美的演示版本，一定要给投资人留下好印象！\"",
-                effects: { progress: 0, money: -40, artist: 10, programmer: 10, designer: 5 }
+                effects: { progress: 0, money: -40, artist: 5, programmer: -10, designer: -10 }
             },
             {
                 text: "\"我们诚实地展示当前进度就行，重点讲讲我们的规划和愿景。\"",
-                effects: { progress: 0, money: -10, artist: -5, programmer: -5, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -339,7 +339,7 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们接受涨价，音效质量对游戏很重要！\"",
-                effects: { progress: 0, money: -30, artist: 10, programmer: 0, designer: 5 }
+                effects: { progress: 0, money: -30, artist: 5, programmer: 0, designer: 5 }
             },
             {
                 text: "\"我们另找方案，使用一些高质量的免费音效库。\"",
@@ -362,11 +362,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们租个临时办公室，确保工作不间断！\"",
-                effects: { progress: -5, money: -25, artist: 10, programmer: 5, designer: 5 }
+                effects: { progress: -5, money: -25, artist: 0, programmer: 0, designer: 0 }
             },
             {
                 text: "\"趁机给大家放个假，回来后以更饱满的状态投入工作。\"",
-                effects: { progress: -15, money: 0, artist: 15, programmer: 10, designer: 15 }
+                effects: { progress: -15, money: 0, artist: 5, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -385,11 +385,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"立即买几台工业风扇和移动空调，先解决燃眉之急！\"",
-                effects: { progress: -5, money: -15, artist: 5, programmer: 10, designer: 5 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们改成夜班制，晚上温度低的时候工作。\"",
-                effects: { progress: -10, money: 0, artist: -10, programmer: -5, designer: -5 }
+                effects: { progress: -10, money: 0, artist: -10, programmer: -10, designer: -10 }
             }
         ]
     },
@@ -408,11 +408,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"先抢救数据，再处理设备损失，一切以项目为重！\"",
-                effects: { progress: -5, money: -35, artist: -5, programmer: 5, designer: 10 }
+                effects: { progress: -5, money: -35, artist: -5, programmer: 0, designer: 0 }
             },
             {
                 text: "\"全力抢救设备，这些是我们的生产工具！\"",
-                effects: { progress: -15, money: -20, artist: 10, programmer: 15, designer: -5 }
+                effects: { progress: -15, money: -20, artist: 0, programmer: 0, designer: -5 }
             }
         ]
     },
@@ -431,11 +431,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"紧急采购居家办公设备，确保远程工作效率！\"",
-                effects: { progress: -5, money: -30, artist: 10, programmer: 15, designer: 5 }
+                effects: { progress: -5, money: -30, artist: 0, programmer: 0, designer: 5 }
             },
             {
                 text: "\"调整工作计划，专注于不需要高端设备的任务。\"",
-                effects: { progress: -15, money: 0, artist: -10, programmer: -10, designer: 15 }
+                effects: { progress: -15, money: 0, artist: -10, programmer: -10, designer: 0 }
             }
         ]
     },
@@ -454,11 +454,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"缩减项目规模，确保能在现有资金内完成核心功能！\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: -10 }
             },
             {
                 text: "\"坚持原计划，多方寻找新的投资机会！\"",
-                effects: { progress: -5, money: -25, artist: 5, programmer: -5, designer: -5 }
+                effects: { progress: -5, money: -25, artist: 5, programmer: -5, designer: 5 }
             }
         ]
     },
@@ -477,11 +477,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"太酷了！我们立即调整游戏设定，加入外星文明元素！\"",
-                effects: { progress: -15, money: -20, artist: 20, programmer: 15, designer: 20 }
+                effects: { progress: -15, money: -20, artist: -10, programmer: -10, designer: 20 }
             },
             {
                 text: "\"专心做我们的游戏，不要被这些奇怪的事情分心。\"",
-                effects: { progress: 0, money: 0, artist: -5, programmer: -5, designer: -10 }
+                effects: { progress: 0, money: 0, artist: 0, programmer: 0, designer: 0 }
             }
         ]
     },
@@ -500,11 +500,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"欢迎新队友！让我们一起创造游戏史上的奇迹！\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: 20, designer: 15 }
+                effects: { progress: 0, money: 0, artist: 0, programmer: 15, designer: 0 }
             },
             {
                 text: "\"太危险了！我们不能信任一个不受控制的AI！\"",
-                effects: { progress: -5, money: -10, artist: -5, programmer: -15, designer: -5 }
+                effects: { progress: -5, money: -10, artist: 15, programmer: 0, designer: 0 }
             }
         ]
     },
@@ -523,11 +523,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"接受挑战！我们要证明这个宇宙的创意是最棒的！\"",
-                effects: { progress: 0, money: -15, artist: 15, programmer: 15, designer: 15 }
+                effects: { progress: 0, money: -15, artist: -10, programmer: -10, designer: -10 }
             },
             {
                 text: "\"拒绝竞赛，专注于我们自己的游戏开发。\"",
-                effects: { progress: 0, money: 0, artist: -5, programmer: -5, designer: -10 }
+                effects: { progress: 0, money: 0, artist: 10, programmer: 10, designer: 10 }
             }
         ]
     },
@@ -548,11 +548,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们优先考虑玩家体验，把系统简化一些，让更多人能轻松上手。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们保持现在的深度，但是要做一个详细的新手教程来引导玩家。\"",
-                effects: { progress: 0, money: -20, artist: -5, programmer: 10, designer: 5 }
+                effects: { progress: 0, money: -20, artist: 5, programmer: -5, designer: -5 }
             }
         ]
     },
@@ -571,11 +571,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"那我们就大胆调整！跟上市场趋势，重新设计美术风格！\"",
-                effects: { progress: -20, money: -25, artist: -15, programmer: 0, designer: 15 }
+                effects: { progress: -20, money: -25, artist: 5, programmer: -5, designer: 5 }
             },
             {
                 text: "\"我们坚持自己的风格，通过独特的美术设计来打动玩家！\"",
-                effects: { progress: 0, money: -15, artist: 10, programmer: 5, designer: -5 }
+                effects: { progress: 0, money: -15, artist: -5, programmer: 5, designer: -5 }
             }
         ]
     },
@@ -594,11 +594,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们专注核心玩家，做有深度的精品游戏！\"",
-                effects: { progress: 0, money: -15, artist: 10, programmer: -5, designer: 20 }
+                effects: { progress: 0, money: -15, artist: 0, programmer: -5, designer: 5 }
             },
             {
                 text: "\"我们扩大受众范围，争取让更多类型的玩家都能享受游戏。\"",
-                effects: { progress: -5, money: 10, artist: -5, programmer: 15, designer: -10 }
+                effects: { progress: -5, money: 10, artist: 0, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -617,11 +617,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们专注设计一个精准的难度曲线，追求完美的单一体验。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -5, designer: 0 }
             },
             {
                 text: "\"我们开发多难度系统，让不同水平的玩家都能找到合适的挑战。\"",
-                effects: { progress: -10, money: -20, artist: -10, programmer: 15, designer: 10 }
+                effects: { progress: -10, money: -20, artist: -10, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -640,11 +640,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们做精品短篇，保证每一刻都是高质量的体验！\"",
-                effects: { progress: 0, money: -10, artist: 15, programmer: -5, designer: 20 }
+                effects: { progress: 0, money: -10, artist: 5, programmer: -5, designer: 5 }
             },
             {
                 text: "\"我们增加内容量，给玩家更多的游戏时间和价值感。\"",
-                effects: { progress: -15, money: -25, artist: -10, programmer: 10, designer: -5 }
+                effects: { progress: -15, money: -25, artist: -10, programmer: 5, designer: -5 }
             }
         ]
     },
@@ -663,11 +663,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们坚持公平原则，只出售不影响游戏平衡的装饰内容。\"",
-                effects: { progress: 0, money: -5, artist: 15, programmer: -10, designer: 20 }
+                effects: { progress: 0, money: -5, artist: 5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"我们设计巧妙的付费系统，在不破坏体验的前提下增加收入。\"",
-                effects: { progress: -5, money: 15, artist: -5, programmer: 15, designer: -10 }
+                effects: { progress: -5, money: 15, artist: -5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -686,11 +686,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们采用新技术，投资未来，做出更好的产品！\"",
-                effects: { progress: -10, money: -15, artist: -10, programmer: 25, designer: -5 }
+                effects: { progress: -10, money: -15, artist: -10, programmer: 5, designer: -5 }
             },
             {
                 text: "\"我们选择稳妥的成熟技术，确保项目顺利完成。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: -15, designer: 10 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -15, designer: 5 }
             }
         ]
     },
@@ -709,11 +709,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"优先保证性能，适当简化功能确保流畅体验。\"",
-                effects: { progress: 0, money: 0, artist: -5, programmer: 20, designer: -15 }
+                effects: { progress: 0, money: 0, artist: -5, programmer: 5, designer: -15 }
             },
             {
                 text: "\"保留所有核心功能，通过更多的优化工作解决性能问题。\"",
-                effects: { progress: -10, money: -20, artist: 5, programmer: 10, designer: 15 }
+                effects: { progress: -10, money: -20, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -732,11 +732,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们专注主要平台，做到极致体验，其他平台后续考虑。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: 15, designer: 5 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们投入资源解决跨平台问题，同时覆盖所有目标平台。\"",
-                effects: { progress: -15, money: -30, artist: -10, programmer: 10, designer: -5 }
+                effects: { progress: -15, money: -30, artist: -10, programmer: -10, designer: -10 }
             }
         ]
     },
@@ -755,11 +755,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们最小化数据收集，优先保护玩家隐私。\"",
-                effects: { progress: 0, money: -5, artist: 15, programmer: -10, designer: -5 }
+                effects: { progress: 0, money: -5, artist: 5, programmer: -10, designer: -5 }
             },
             {
                 text: "\"我们设计透明的数据政策，在获得用户同意下收集必要数据。\"",
-                effects: { progress: 0, money: 5, artist: 5, programmer: 15, designer: 10 }
+                effects: { progress: 0, money: 5, artist: 5, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -778,11 +778,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们坚持高质量标准，为长期发展打好基础。\"",
-                effects: { progress: -5, money: -10, artist: 5, programmer: 20, designer: -10 }
+                effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: -10 }
             },
             {
                 text: "\"我们先快速完成功能，后续再优化代码质量。\"",
-                effects: { progress: 0, money: 0, artist: -5, programmer: -15, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -801,11 +801,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"保持高质量美术标准，我们面向高端玩家群体！\"",
-                effects: { progress: 0, money: -10, artist: 20, programmer: -15, designer: -5 }
+                effects: { progress: 0, money: -10, artist: 5, programmer: -10, designer: -5 }
             },
             {
                 text: "\"调整美术方案，确保更广泛的设备兼容性。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -824,11 +824,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"优先考虑易用性，确保玩家能够轻松上手。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 10, designer: 20 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"追求视觉震撼，通过出色的美术设计吸引玩家！\"",
-                effects: { progress: -5, money: -15, artist: 25, programmer: -10, designer: -5 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: -10, designer: -5 }
             }
         ]
     },
@@ -847,11 +847,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们追求完全原创，创造独一无二的角色形象！\"",
-                effects: { progress: -10, money: -20, artist: 25, programmer: -5, designer: -5 }
+                effects: { progress: -10, money: -20, artist: 5, programmer: -5, designer: -5 }
             },
             {
                 text: "\"我们在经典元素基础上创新，确保玩家接受度。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -870,11 +870,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"保持华丽特效，这是我们游戏的核心卖点！\"",
-                effects: { progress: -5, money: -10, artist: 20, programmer: -20, designer: -5 }
+                effects: { progress: -5, money: -10, artist: 5, programmer: -10, designer: -5 }
             },
             {
                 text: "\"简化特效系统，优先保证游戏的流畅性。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 20, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -895,11 +895,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持美术的创意！我们重构技术架构来支持这种风格。\"",
-                effects: { progress: -20, money: -25, artist: 20, programmer: -20, designer: -5 }
+                effects: { progress: -20, money: -25, artist: 5, programmer: -10, designer: -5 }
             },
             {
                 text: "\"选择技术上更容易实现的美术风格。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 5 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -918,11 +918,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"坚持原创美术，这是我们的核心竞争力！\"",
-                effects: { progress: -15, money: -20, artist: 20, programmer: -10, designer: 5 }
+                effects: { progress: -15, money: -20, artist: 5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"合理使用素材库，专注于核心内容的原创设计。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 0 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -941,11 +941,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们简化动画系统，确保程序稳定性。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 20, designer: -5 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: -5 }
             },
             {
                 text: "\"投入时间攻克技术难点，实现高质量动画。\"",
-                effects: { progress: -10, money: -25, artist: 20, programmer: -10, designer: 5 }
+                effects: { progress: -10, money: -25, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -964,11 +964,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"压缩和优化资源，优先保证加载速度。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 20, designer: 10 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"保持美术质量，通过预加载和流式加载来优化体验。\"",
-                effects: { progress: -10, money: -20, artist: 15, programmer: 5, designer: 0 }
+                effects: { progress: -10, money: -20, artist: 5, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -987,11 +987,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"推进代码重构，重新处理美术资源以获得更好性能。\"",
-                effects: { progress: -15, money: -15, artist: -20, programmer: 20, designer: -5 }
+                effects: { progress: -15, money: -15, artist: -10, programmer: 5, designer: -5 }
             },
             {
                 text: "\"保持现有架构，通过其他方式优化性能。\"",
-                effects: { progress: 0, money: 0, artist: 15, programmer: -10, designer: 5 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1010,11 +1010,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"建立专门的美术资源管理系统。\"",
-                effects: { progress: -5, money: -20, artist: 15, programmer: 5, designer: 5 }
+                effects: { progress: -5, money: -20, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"简化美术文件，适应现有的版本控制流程。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 0 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -1033,11 +1033,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持策划的灵活设计，构建可扩展的系统架构。\"",
-                effects: { progress: -15, money: -25, artist: 0, programmer: -15, designer: 20 }
+                effects: { progress: -15, money: -25, artist: 0, programmer: -10, designer: 5 }
             },
             {
                 text: "\"优先系统稳定性，限制功能的复杂度。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: 20, designer: -20 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1056,11 +1056,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"研究实现智能AI，即使技术难度很高。\"",
-                effects: { progress: -25, money: -35, artist: 5, programmer: -5, designer: 25 }
+                effects: { progress: -25, money: -35, artist: 5, programmer: -5, designer: 5 }
             },
             {
                 text: "\"使用传统AI方案，确保开发进度。\"",
-                effects: { progress: 0, money: 0, artist: 0, programmer: 20, designer: -20 }
+                effects: { progress: 0, money: 0, artist: 0, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1079,11 +1079,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"开发多人功能，这是未来游戏的趋势！\"",
-                effects: { progress: -30, money: -40, artist: -5, programmer: -15, designer: 25 }
+                effects: { progress: -30, money: -40, artist: -5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"专注单人体验，避免网络技术的复杂性。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: 25, designer: -25 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1102,11 +1102,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"投入研发程序化生成系统，创造无限内容。\"",
-                effects: { progress: -20, money: -30, artist: -10, programmer: 5, designer: 25 }
+                effects: { progress: -20, money: -30, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"手工制作精品内容，确保质量可控。\"",
-                effects: { progress: 0, money: -15, artist: 15, programmer: 15, designer: -15 }
+                effects: { progress: 0, money: -15, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1125,11 +1125,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持美术的创意，调整游戏世界观来容纳这些元素。\"",
-                effects: { progress: -10, money: -15, artist: 20, programmer: 0, designer: -15 }
+                effects: { progress: -10, money: -15, artist: 5, programmer: 0, designer: -10 }
             },
             {
                 text: "\"坚持原有设定，要求美术设计符合世界观。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1148,11 +1148,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"修改角色设计，确保视觉与玩法一致。\"",
-                effects: { progress: -5, money: -10, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: -5, money: -10, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"调整玩法设计，让功能匹配角色的视觉形象。\"",
-                effects: { progress: -10, money: -15, artist: 15, programmer: -5, designer: -10 }
+                effects: { progress: -10, money: -15, artist: 5, programmer: -5, designer: -10 }
             }
         ]
     },
@@ -1171,11 +1171,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"调整色彩方案，配合游戏的情绪节奏。\"",
-                effects: { progress: -5, money: -10, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: -5, money: -10, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"保持美术风格统一，通过其他方式营造紧张氛围。\"",
-                effects: { progress: 0, money: -15, artist: 15, programmer: -5, designer: -5 }
+                effects: { progress: 0, money: -15, artist: 5, programmer: -5, designer: -5 }
             }
         ]
     },
@@ -1194,11 +1194,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"优先信息传达，设计功能性更强的界面。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 10, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"保持美观设计，通过交互方式优化信息展示。\"",
-                effects: { progress: -5, money: -15, artist: 20, programmer: -5, designer: -5 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: -5, designer: -5 }
             }
         ]
     },
@@ -1217,11 +1217,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持艺术创新，适度突破世界观限制。\"",
-                effects: { progress: -10, money: -20, artist: 20, programmer: -5, designer: -10 }
+                effects: { progress: -10, money: -20, artist: 5, programmer: -5, designer: -10 }
             },
             {
                 text: "\"维护世界观一致性，在既定框架内创新。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 20 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1240,11 +1240,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"突出角色个性，通过数值调整维持平衡。\"",
-                effects: { progress: -5, money: -15, artist: 15, programmer: 5, designer: -5 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: -5 }
             },
             {
                 text: "\"统一角色表现力度，确保选择平衡性。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 0, designer: 20 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 0, designer: 5 }
             }
         ]
     },
@@ -1263,11 +1263,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"采用含蓄的艺术叙事，提升游戏的艺术价值。\"",
-                effects: { progress: 0, money: -10, artist: 20, programmer: 0, designer: -15 }
+                effects: { progress: 0, money: -10, artist: 5, programmer: 0, designer: -10 }
             },
             {
                 text: "\"优先清晰的游戏引导，确保玩家体验顺畅。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1286,11 +1286,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"调整美术制作顺序，优先支持策划测试。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             },
             {
                 text: "\"坚持美术制作计划，策划先用临时资源测试。\"",
-                effects: { progress: -5, money: 0, artist: 15, programmer: 0, designer: -10 }
+                effects: { progress: -5, money: 0, artist: 5, programmer: 0, designer: -10 }
             }
         ]
     },
@@ -1309,11 +1309,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持风格实验，走差异化路线吸引特定群体。\"",
-                effects: { progress: -5, money: -15, artist: 25, programmer: 5, designer: -10 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: -10 }
             },
             {
                 text: "\"选择更稳妥的风格，确保市场接受度。\"",
-                effects: { progress: 0, money: 5, artist: -15, programmer: 0, designer: 15 }
+                effects: { progress: 0, money: 5, artist: -10, programmer: 0, designer: 5 }
             }
         ]
     },
@@ -1334,11 +1334,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我支持美术的想法，我们要做有艺术追求的游戏！\"",
-                effects: { progress: 0, money: 0, artist: 15, programmer: 0, designer: -15 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 0, designer: -10 }
             },
             {
                 text: "\"我同意策划的建议，我们降低门槛让更多人能享受游戏。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1357,11 +1357,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们选择付费买断，专心把核心体验做到极致！\"",
-                effects: { progress: 0, money: -20, artist: 5, programmer: 15, designer: -10 }
+                effects: { progress: 0, money: -20, artist: 5, programmer: 5, designer: -10 }
             },
             {
                 text: "\"我们采用免费+内购模式，设计合理的盈利系统。\"",
-                effects: { progress: -5, money: 10, artist: -5, programmer: -15, designer: 15 }
+                effects: { progress: -5, money: 10, artist: -5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1380,11 +1380,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持策划的想法，内容为王，先把玩法做丰富。\"",
-                effects: { progress: 0, money: -15, artist: 5, programmer: -15, designer: 20 }
+                effects: { progress: 0, money: -15, artist: 5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"技术基础确实更重要，先把底层架构做稳固。\"",
-                effects: { progress: 0, money: -10, artist: 0, programmer: 20, designer: -15 }
+                effects: { progress: 0, money: -10, artist: 0, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1403,11 +1403,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持美术创新，让游戏有更多层次的视觉体验。\"",
-                effects: { progress: -5, money: -15, artist: 20, programmer: -5, designer: -10 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: -5, designer: -10 }
             },
             {
                 text: "\"保持风格统一，确保游戏的整体体验连贯。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 5, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1426,11 +1426,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"先解决技术债务，为后续开发打好基础。\"",
-                effects: { progress: -15, money: -10, artist: -20, programmer: 25, designer: -5 }
+                effects: { progress: -15, money: -10, artist: -10, programmer: 5, designer: -5 }
             },
             {
                 text: "\"继续推进内容制作，技术问题后续再统一处理。\"",
-                effects: { progress: 0, money: 0, artist: 15, programmer: -20, designer: 5 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1449,11 +1449,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"保持功能完整性，我们加班加点也要做完！\"",
-                effects: { progress: -5, money: -20, artist: -10, programmer: -15, designer: 20 }
+                effects: { progress: -5, money: -20, artist: -10, programmer: -10, designer: 5 }
             },
             {
                 text: "\"确保发布质量，适当削减次要功能。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: 20, designer: -20 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1472,11 +1472,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持代码架构升级，投资长期的技术发展。\"",
-                effects: { progress: -20, money: -15, artist: -15, programmer: 25, designer: 0 }
+                effects: { progress: -20, money: -15, artist: -10, programmer: 5, designer: 0 }
             },
             {
                 text: "\"保持现有架构，避免对创作流程的干扰。\"",
-                effects: { progress: 0, money: 0, artist: 20, programmer: -20, designer: 5 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1495,11 +1495,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"建立数据驱动的开发体系，用科学方法指导决策。\"",
-                effects: { progress: -10, money: -25, artist: -5, programmer: -10, designer: 25 }
+                effects: { progress: -10, money: -25, artist: -5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"相信团队的专业经验和直觉判断。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: 20, designer: -20 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1518,11 +1518,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"坚持艺术理想，相信好的作品最终会被认可。\"",
-                effects: { progress: 0, money: -20, artist: 25, programmer: 0, designer: -15 }
+                effects: { progress: 0, money: -20, artist: 5, programmer: 0, designer: -10 }
             },
             {
                 text: "\"在商业成功的基础上追求艺术价值。\"",
-                effects: { progress: 0, money: 10, artist: -15, programmer: 5, designer: 20 }
+                effects: { progress: 0, money: 10, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1541,11 +1541,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持大胆创新，为了突破而承担风险！\"",
-                effects: { progress: -15, money: -25, artist: 25, programmer: -20, designer: 5 }
+                effects: { progress: -15, money: -25, artist: 5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"选择稳妥路线，确保项目稳定完成。\"",
-                effects: { progress: 0, money: 5, artist: -20, programmer: 25, designer: 0 }
+                effects: { progress: 0, money: 5, artist: -10, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -1564,11 +1564,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"保持快速迭代节奏，快速响应和调整。\"",
-                effects: { progress: 0, money: -15, artist: -5, programmer: -15, designer: 20 }
+                effects: { progress: 0, money: -15, artist: -5, programmer: -10, designer: 5 }
             },
             {
                 text: "\"采用稳健的开发节奏，确保每步都扎实。\"",
-                effects: { progress: 0, money: -5, artist: 10, programmer: 20, designer: -15 }
+                effects: { progress: 0, money: -5, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1587,11 +1587,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"支持团队成员的技能成长，这是长期投资。\"",
-                effects: { progress: -10, money: -15, artist: 25, programmer: 5, designer: -10 }
+                effects: { progress: -10, money: -15, artist: 5, programmer: 5, designer: -10 }
             },
             {
                 text: "\"项目目标优先，个人成长可以在项目完成后进行。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 0, designer: 20 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 0, designer: 5 }
             }
         ]
     },
@@ -1612,11 +1612,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们组织一次技术交流会，让大家互相了解工作难点。\"",
-                effects: { progress: -5, money: -10, artist: 5, programmer: 10, designer: 15 }
+                effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"美术，你要相信程序的专业判断，我们要互相尊重。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 5 }
+                effects: { progress: 0, money: 0, artist: -15, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1635,7 +1635,7 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我支持美术的创作自由，让我们相信专业的艺术直觉。\"",
-                effects: { progress: 0, money: -15, artist: 20, programmer: 0, designer: -15 }
+                effects: { progress: 0, money: -15, artist: 5, programmer: 0, designer: -15 }
             },
             {
                 text: "\"我们需要平衡艺术性和商业性，两位都有道理。\"",
@@ -1658,11 +1658,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"艺术理想很重要！我们调整项目方向，给你更多创作空间。\"",
-                effects: { progress: -10, money: -20, artist: 25, programmer: -5, designer: -10 }
+                effects: { progress: -10, money: -20, artist: 5, programmer: -5, designer: -10 }
             },
             {
                 text: "\"先完成项目，以后我们做更有艺术性的作品来实现理想。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 10, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1681,11 +1681,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们立即调整工作安排，给你足够的休息和调整时间。\"",
-                effects: { progress: -15, money: -15, artist: 25, programmer: 5, designer: 5 }
+                effects: { progress: -15, money: -15, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们一起分担你的工作压力，团队要互相支持。\"",
-                effects: { progress: -5, money: -20, artist: 15, programmer: 10, designer: 10 }
+                effects: { progress: -5, money: -20, artist: 5, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1704,11 +1704,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我相信你的能力！我们安排一些培训时间，一起提升技术水平。\"",
-                effects: { progress: -10, money: -20, artist: 0, programmer: 20, designer: 5 }
+                effects: { progress: -10, money: -20, artist: 0, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们调整一下技术方案，选择更稳妥的解决方案，稳扎稳打。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: 10, designer: -10 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1727,11 +1727,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们建立更清晰的技术规范，让大家都理解限制条件。\"",
-                effects: { progress: -5, money: -15, artist: -5, programmer: 20, designer: 10 }
+                effects: { progress: -5, money: -15, artist: -5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"程序，你要更耐心地解释技术问题，团队需要互相理解。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: -10, designer: 5 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1750,11 +1750,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们建立更严格的需求确认流程，减少后期变更。\"",
-                effects: { progress: -10, money: -10, artist: 5, programmer: 20, designer: -15 }
+                effects: { progress: -10, money: -10, artist: 5, programmer: 5, designer: -10 }
             },
             {
                 text: "\"灵活调整是必要的，我们要适应开发过程中的变化。\"",
-                effects: { progress: 0, money: 0, artist: 0, programmer: -15, designer: 15 }
+                effects: { progress: 0, money: 0, artist: 0, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1773,11 +1773,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们在项目中加入一些技术挑战，让你有机会实现技术理想。\"",
-                effects: { progress: -15, money: -20, artist: -5, programmer: 25, designer: -5 }
+                effects: { progress: -15, money: -20, artist: -5, programmer: 5, designer: -5 }
             },
             {
                 text: "\"先打好基础，技术理想需要循序渐进地实现。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 10 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1796,11 +1796,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"立即安排你休假，项目进度可以稍微放缓。\"",
-                effects: { progress: -20, money: -10, artist: 5, programmer: 25, designer: 5 }
+                effects: { progress: -20, money: -10, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们调整工作分配，减轻你的技术负担。\"",
-                effects: { progress: -10, money: -15, artist: 0, programmer: 15, designer: 0 }
+                effects: { progress: -10, money: -15, artist: 0, programmer: 5, designer: 0 }
             }
         ]
     },
@@ -1819,11 +1819,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们大家一起头脑风暴，集思广益找新的灵感！\"",
-                effects: { progress: -5, money: -15, artist: 10, programmer: 5, designer: 15 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我们先专注完善现有内容，不急着添加新功能。\"",
-                effects: { progress: 0, money: 0, artist: 5, programmer: 10, designer: -10 }
+                effects: { progress: 0, money: 0, artist: 5, programmer: 5, designer: -10 }
             }
         ]
     },
@@ -1842,11 +1842,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们建立更好的协作机制，让设计和美术更好地融合。\"",
-                effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: 15 }
+                effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"美术要更多地配合策划的设计意图。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 0, designer: 15 }
+                effects: { progress: 0, money: 0, artist: -10, programmer: 0, designer: 5 }
             }
         ]
     },
@@ -1865,11 +1865,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们开个团队会议，重新激发大家的工作热情。\"",
-                effects: { progress: -5, money: -10, artist: 10, programmer: 5, designer: 15 }
+                effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"程序，我们需要你更积极的态度来带动团队。\"",
-                effects: { progress: 0, money: 0, artist: 0, programmer: -10, designer: 10 }
+                effects: { progress: 0, money: 0, artist: 0, programmer: -10, designer: 5 }
             }
         ]
     },
@@ -1888,11 +1888,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"你的设计理念很棒！我们一起想办法克服实现难题。\"",
-                effects: { progress: -10, money: -15, artist: 0, programmer: -5, designer: 25 }
+                effects: { progress: -10, money: -15, artist: 0, programmer: -5, designer: 5 }
             },
             {
                 text: "\"设计需要在理想和现实间平衡，我们一起学习成长。\"",
-                effects: { progress: 0, money: -5, artist: 5, programmer: 5, designer: 10 }
+                effects: { progress: 0, money: -5, artist: 5, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1911,11 +1911,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"我们分担项目责任，你的健康比项目更重要。\"",
-                effects: { progress: -15, money: -20, artist: 10, programmer: 10, designer: 25 }
+                effects: { progress: -15, money: -20, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"我安排心理咨询师来帮助你缓解压力。\"",
-                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: 20 }
+                effects: { progress: -5, money: -15, artist: 5, programmer: 5, designer: 5 }
             }
         ]
     },
@@ -1936,264 +1936,11 @@ const conflictEvents = [
         choices: [
             {
                 text: "\"立即购买新设备，确保开发不受影响！\"",
-                effects: { progress: 0, money: -50, artist: 5, programmer: 10, designer: 5 }
+                effects: { progress: 0, money: -50, artist: 5, programmer: 5, designer: 5 }
             },
             {
                 text: "\"先尝试修理，能省则省。\"",
                 effects: { progress: -10, money: -20, artist: -5, programmer: -5, designer: -5 }
-            }
-        ]
-    },
-    {
-        title: "美术抱怨程序做不出理想效果",
-        requiredMembers: ["artist"], // 需要美术在团队中
-        descriptionTemplate: {
-            base: "美术兴冲冲地拿着新设计跑来找程序，结果被告知\"这个效果做不了\"。",
-            memberReactions: {
-                artist: "美术忍不住抱怨：\"我设计的效果他总说实现不了，是不是技术水平不够啊？\"",
-                programmer: "程序脸色难看：\"有些效果确实在当前硬件条件下做不到...\"",
-                designer: "策划试图缓解：\"我们好好沟通一下技术可行性问题。\""
-            },
-            fallback: "美术对程序的技术能力表示质疑，团队气氛变得紧张。"
-        },
-        choices: [
-            {
-                text: "\"我们组织一次技术交流会，让大家互相了解工作难点。\"",
-                effects: { progress: -5, money: -10, artist: 5, programmer: 10, designer: 15 }
-            },
-            {
-                text: "\"美术，你要相信程序的专业判断，我们要互相尊重。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 5 }
-            }
-        ]
-    },
-    {
-        title: "程序抱怨策划频繁改需求",
-        requiredMembers: ["programmer"], // 需要程序在团队中
-        descriptionTemplate: {
-            base: "程序刚写完一个功能，策划又跑过来说\"这里再改改\"，这已经是今天第三次了。",
-            memberReactions: {
-                programmer: "程序疲惫地抱怨：\"又要改需求！刚写好的代码又要重构，这是第几次了？\"",
-                designer: "策划解释：\"测试后发现问题必须要调整啊...\"",
-                artist: "美术感同身受：\"改来改去大家都很累。\""
-            },
-            fallback: "程序对策划频繁的需求变更感到精疲力尽。"
-        },
-        choices: [
-            {
-                text: "\"我们建立更严格的需求确认流程，减少后期变更。\"",
-                effects: { progress: -10, money: -10, artist: 5, programmer: 20, designer: -15 }
-            },
-            {
-                text: "\"灵活调整是必要的，我们要适应开发过程中的变化。\"",
-                effects: { progress: 0, money: 0, artist: 0, programmer: -15, designer: 15 }
-            }
-        ]
-    },
-    {
-        title: "美术坚持原创vs程序建议用素材库",
-        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
-        descriptionTemplate: {
-            base: "程序指着素材库说\"用这些能节省一个月\"，美术直接炸了：\"用别人的素材？\"",
-            memberReactions: {
-                programmer: "程序建议：\"高质量素材库能节省大量开发时间。\"",
-                artist: "美术反对：\"用别人的素材怎么体现独特风格？玩家会觉得很廉价！\"",
-                designer: "策划补充：\"时间确实紧张，但视觉辨识度也重要。\""
-            },
-            fallback: "开发效率和美术原创性之间需要做出选择。"
-        },
-        choices: [
-            {
-                text: "\"坚持原创美术，这是我们的核心竞争力！\"",
-                effects: { progress: -15, money: -20, artist: 20, programmer: -10, designer: 5 }
-            },
-            {
-                text: "\"合理使用素材库，专注于核心内容的原创设计。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 0 }
-            }
-        ]
-    },
-    {
-        title: "策划要加多人模式vs程序说太复杂",
-        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
-        descriptionTemplate: {
-            base: "策划看着朋友圈里大家在玩合作游戏，突然兴奋地跑来：\"我们也加个多人模式！\"",
-            memberReactions: {
-                designer: "策划提议：\"加个实时合作模式，让朋友们可以一起玩！\"",
-                programmer: "程序解释困难：\"多人同步需要重新设计整个网络架构，问题太多了。\"",
-                artist: "美术询问：\"多人模式需要重新设计UI吗？\""
-            },
-            fallback: "多人功能的设计需求与网络技术实现的复杂性冲突。"
-        },
-        choices: [
-            {
-                text: "\"开发多人功能，这是未来游戏的趋势！\"",
-                effects: { progress: -30, money: -40, artist: -5, programmer: -15, designer: 25 }
-            },
-            {
-                text: "\"专注单人体验，避免网络技术的复杂性。\"",
-                effects: { progress: 0, money: 0, artist: 10, programmer: 25, designer: -25 }
-            }
-        ]
-    },
-    {
-        title: "美术追求高质量vs程序担心性能",
-        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
-        descriptionTemplate: {
-            base: "美术做出了4K材质展示效果，程序测试后发现游戏要等2分钟才能启动。",
-            memberReactions: {
-                artist: "美术强调：\"4K材质是保证视觉质量的基础，不能妥协！\"",
-                programmer: "程序无奈：\"启动要等2分钟，很多玩家会直接卸载的。\"",
-                designer: "策划分析：\"首次体验很重要，加载时间确实是问题。\""
-            },
-            fallback: "美术质量和加载性能之间需要找到平衡点。"
-        },
-        choices: [
-            {
-                text: "\"压缩和优化资源，优先保证加载速度。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 20, designer: 10 }
-            },
-            {
-                text: "\"保持美术质量，通过预加载和流式加载来优化体验。\"",
-                effects: { progress: -10, money: -20, artist: 15, programmer: 5, designer: 0 }
-            }
-        ]
-    },
-    {
-        title: "美术想突破风格vs策划担心世界观",
-        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
-        descriptionTemplate: {
-            base: "美术在现代都市游戏里画了一个魔法阵，策划看了直接懵了：\"这是什么？\"",
-            memberReactions: {
-                artist: "美术激动地说：\"超酷的魔法效果，有复杂的符文阵列！\"",
-                designer: "策划泼冷水：\"我们的游戏是现代都市题材，魔法元素完全不符合设定。\"",
-                programmer: "程序表示：\"技术角度来说，两种方案实现难度差不多。\""
-            },
-            fallback: "艺术创意与游戏设定的一致性产生冲突。"
-        },
-        choices: [
-            {
-                text: "\"支持美术的创意，调整游戏世界观来容纳这些元素。\"",
-                effects: { progress: -10, money: -15, artist: 20, programmer: 0, designer: -15 }
-            },
-            {
-                text: "\"坚持原有设定，要求美术设计符合世界观。\"",
-                effects: { progress: 0, money: 0, artist: -15, programmer: 5, designer: 15 }
-            }
-        ]
-    },
-    {
-        title: "竞争对手突然发布同类游戏",
-        requiredMembers: [], // 不需要特定成员，任何情况都可触发
-        descriptionTemplate: {
-            base: "你正在喝咖啡时，美术冲进来大喊：\"大事不好！BigGame公司昨天发布的新游戏和我们的想法一模一样！\"",
-            memberReactions: {
-                artist: "美术匆忙跑进办公室：\"网上都在讨论他们的游戏！\"",
-                programmer: "程序抬起头：\"我看了宣传片，确实和我们的想法很接近。\"",
-                designer: "策划紧张地说：\"会不会觉得我们是在抄袭啊？\""
-            },
-            fallback: "团队成员都开始质疑项目的市场前景。"
-        },
-        choices: [
-            {
-                text: "\"别慌！我们立即调整核心玩法，走差异化路线！\"",
-                effects: { progress: -15, money: -30, artist: 10, programmer: -10, designer: 15 }
-            },
-            {
-                text: "\"我们坚持原计划，专注于把游戏做得更精致！\"",
-                effects: { progress: 0, money: 0, artist: -5, programmer: 5, designer: -10 }
-            }
-        ]
-    },
-    {
-        title: "投资人突然要求提前汇报",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "王总的电话打断了午休：\"小李啊，下周就要看到demo。\"挂断后，整个办公室陷入死寂。",
-            memberReactions: {
-                programmer: "程序紧张地说：\"下周？我们现在的版本还有好多bug...\"",
-                artist: "美术担心：\"界面还没完全做好，这样展示会不会太粗糙？\"",
-                designer: "策划补充：\"需要准备完整的演示流程...\""
-            },
-            fallback: "大家都对是否能展示出满意的demo感到担忧。"
-        },
-        choices: [
-            {
-                text: "\"大家加把劲！花钱做个精美演示版本！\"",
-                effects: { progress: 0, money: -40, artist: 10, programmer: 10, designer: 5 }
-            },
-            {
-                text: "\"诚实展示当前进度，重点讲规划和愿景。\"",
-                effects: { progress: 0, money: -10, artist: -5, programmer: -5, designer: 10 }
-            }
-        ]
-    },
-    {
-        title: "音效合作方临时涨价50%",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "音乐工作室的电话响起：\"不好意思，项目复杂度超预期，需要涨价50%。\"",
-            memberReactions: {
-                programmer: "程序说：\"距离交付时间已经很紧了...\"",
-                artist: "美术担心：\"换音效师的话，风格可能对不上...\"",
-                designer: "策划补充：\"需要重新评估音效预算了。\""
-            },
-            fallback: "音乐工作室突然要求涨价，时间已经很紧张了。"
-        },
-        choices: [
-            {
-                text: "\"接受涨价，音效质量对游戏很重要！\"",
-                effects: { progress: 0, money: -30, artist: 10, programmer: 0, designer: 5 }
-            },
-            {
-                text: "\"另找方案，使用高质量的免费音效库。\"",
-                effects: { progress: -5, money: 0, artist: -10, programmer: 5, designer: -5 }
-            }
-        ]
-    },
-    {
-        title: "写字楼突然停电三天",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "物业紧急通知：\"主变压器故障，整栋楼停电三天抢修。\"程序看着未保存的代码欲哭无泪。",
-            memberReactions: {
-                programmer: "程序崩溃：\"我的代码还没提交到云端！\"",
-                artist: "美术着急：\"设计软件需要高性能电脑，在家根本跑不动...\"",
-                designer: "策划提议：\"去咖啡厅办公？或者找共享办公空间？\""
-            },
-            fallback: "停电三天将严重影响开发进度。"
-        },
-        choices: [
-            {
-                text: "\"租个临时办公室，确保工作不间断！\"",
-                effects: { progress: -5, money: -25, artist: 10, programmer: 5, designer: 5 }
-            },
-            {
-                text: "\"给大家放个假，回来后以更饱满状态投入工作。\"",
-                effects: { progress: -15, money: 0, artist: 15, programmer: 10, designer: 15 }
-            }
-        ]
-    },
-    {
-        title: "空调系统在酷暑中全面瘫痪",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "室外40度高温，工作室空调彻底坏掉，维修师傅说零件要从外地调货，至少一周。",
-            memberReactions: {
-                artist: "美术汗流浃背：\"这温度根本没法集中精神，电脑也开始降频了...\"",
-                programmer: "程序擦汗：\"服务器已经开始报警，再这样硬件要出问题。\"",
-                designer: "策划建议：\"暂时搬到有空调的地方办公？\""
-            },
-            fallback: "高温环境严重影响工作效率和设备稳定性。"
-        },
-        choices: [
-            {
-                text: "\"立即买工业风扇和移动空调，先解决燃眉之急！\"",
-                effects: { progress: -5, money: -15, artist: 5, programmer: 10, designer: 5 }
-            },
-            {
-                text: "\"改成夜班制，晚上温度低的时候工作。\"",
-                effects: { progress: -10, money: 0, artist: -10, programmer: -5, designer: -5 }
             }
         ]
     }
@@ -2257,7 +2004,7 @@ async function nextMonth() {
     }
     
     // 基础月度开发进展
-    const baseProgress = Math.floor(Math.random() * 3) + 3; // 3-6%随机进度
+    const baseProgress = Math.floor(Math.random() * 5) + 5; // 5-10%随机进度
     gameState.progress += baseProgress;
     
     if (gameState.isInDebtMode) {
@@ -2281,8 +2028,8 @@ async function nextMonth() {
         console.log('策划:', gameState.teamConfidence.designer);
         console.log('===================');
     } else {
-        // 正常模式：扣除5万运营成本
-        const operatingCost = 5;
+        // 正常模式：扣除10万运营成本
+        const operatingCost = 10;
         gameState.money -= operatingCost;
         console.log('扣除运营成本:', operatingCost, '万，剩余资金:', gameState.money, '万');
     }
@@ -2296,9 +2043,9 @@ async function nextMonth() {
     }
     
     // 限制信心值范围
-    gameState.teamConfidence.artist = Math.max(0, Math.min(100, gameState.teamConfidence.artist));
-    gameState.teamConfidence.programmer = Math.max(0, Math.min(100, gameState.teamConfidence.programmer));
-    gameState.teamConfidence.designer = Math.max(0, Math.min(100, gameState.teamConfidence.designer));
+    gameState.teamConfidence.artist = Math.max(0, Math.min(60, gameState.teamConfidence.artist));
+    gameState.teamConfidence.programmer = Math.max(0, Math.min(60, gameState.teamConfidence.programmer));
+    gameState.teamConfidence.designer = Math.max(0, Math.min(60, gameState.teamConfidence.designer));
     
     // 检查团队成员状态
     const teamStatus = checkTeamMemberStatus();
@@ -2464,9 +2211,9 @@ async function makeChoice(choiceIndex) {
         gameState.money = Math.max(0, gameState.money);
     }
     
-    gameState.teamConfidence.artist = Math.max(0, Math.min(100, gameState.teamConfidence.artist));
-    gameState.teamConfidence.programmer = Math.max(0, Math.min(100, gameState.teamConfidence.programmer));
-    gameState.teamConfidence.designer = Math.max(0, Math.min(100, gameState.teamConfidence.designer));
+    gameState.teamConfidence.artist = Math.max(0, Math.min(60, gameState.teamConfidence.artist));
+    gameState.teamConfidence.programmer = Math.max(0, Math.min(60, gameState.teamConfidence.programmer));
+    gameState.teamConfidence.designer = Math.max(0, Math.min(60, gameState.teamConfidence.designer));
     
     // 打印信心变化详情
     console.log('=== 团队信心变化 ===');
@@ -2527,6 +2274,7 @@ function checkTeamMemberStatus() {
     console.log('=== 检查团队成员状态 ===');
     
     let memberLeft = false; // 标记是否有成员离队
+    const leftMembers = []; // 记录离开的成员
     
     // 检查每个成员是否需要离开团队
     for (const [member, confidence] of Object.entries(gameState.teamConfidence)) {
@@ -2541,6 +2289,7 @@ function checkTeamMemberStatus() {
             } else {
                 // 正常模式下，成员离开团队
                 gameState.teamMembers[member] = false;
+                leftMembers.push(member);
                 console.log(`💔 ${memberNames[member]}离开了团队！`);
                 memberLeft = true;
                 
@@ -2565,6 +2314,45 @@ function checkTeamMemberStatus() {
                 }, 2000);
             }
         }
+    }
+    
+    // 如果有成员离开团队，剩余成员的信心减少各自当前值的50%
+    if (memberLeft && leftMembers.length > 0) {
+        console.log('=== 成员离开影响剩余团队信心 ===');
+        
+        // 对还在团队中的每个成员，减少其信心的50%
+        for (const [member, isInTeam] of Object.entries(gameState.teamMembers)) {
+            if (isInTeam) { // 只影响还在团队中的成员
+                const oldConfidence = gameState.teamConfidence[member];
+                const newConfidence = Math.floor(oldConfidence * 0.5); // 减少50%，向下取整
+                gameState.teamConfidence[member] = Math.max(0, newConfidence); // 确保不低于0
+                
+                console.log(`${memberNames[member]}信心受到冲击: ${oldConfidence} -> ${gameState.teamConfidence[member]} (减少50%)`);
+            }
+        }
+        
+        // 显示团队信心受影响的提示（在成员离开提示后显示）
+        setTimeout(() => {
+            const tipsElement = document.getElementById('tips');
+            const leftMemberNames = leftMembers.map(member => memberNames[member]).join('和');
+            const impactMessage = `${leftMemberNames}的离开让剩余团队成员的信心受到了严重冲击...`;
+            tipsElement.innerHTML = impactMessage;
+            tipsElement.classList.add('show');
+            
+            setTimeout(() => {
+                tipsElement.classList.add('fade-out');
+                tipsElement.classList.remove('show');
+                
+                setTimeout(() => {
+                    if (tipsElement.innerHTML === impactMessage) {
+                        tipsElement.innerHTML = '';
+                    }
+                    tipsElement.classList.remove('fade-out');
+                }, 300);
+            }, 2500); // 在成员离开提示显示2.5秒后显示
+            
+            console.log('================================');
+        }, 2500); // 在成员离开提示显示2.5秒后显示
     }
     
     const remainingMembers = Object.values(gameState.teamMembers).filter(inTeam => inTeam);
@@ -2797,9 +2585,9 @@ function restartGame() {
         month: 6,
         year: 2025,
         teamConfidence: {
-            artist: 100,
-            programmer: 100,
-            designer: 100
+            artist: 60,
+            programmer: 60,
+            designer: 60
         },
         teamMembers: {
             artist: true,
@@ -2818,6 +2606,15 @@ function restartGame() {
     document.getElementById('debt-modal').classList.add('hidden');
     document.getElementById('tips').classList.remove('show', 'fade-out');
     document.getElementById('tips').innerHTML = '';
+    
+    // 重置"开始开发"按钮状态
+    const startBtn = document.getElementById('start-btn');
+    startBtn.style.display = 'block';
+    startBtn.textContent = '开始开发';
+    
+    // 清除game-content上的所有动画类，防止按钮播放出场动画
+    const gameContent = document.getElementById('game-content');
+    gameContent.classList.remove('exit-down', 'enter-up');
     
     // 显示介绍页面，隐藏游戏UI
     hideGameUI();
@@ -3113,6 +2910,15 @@ function startGame() {
     // 显示游戏UI
     gameState.isIntroShown = false;
     showGameUI();
+    
+    // 确保"开始开发"按钮显示
+    const startBtn = document.getElementById('start-btn');
+    startBtn.style.display = 'block';
+    startBtn.textContent = '开始开发';
+    
+    // 清除game-content上的所有动画类，确保按钮正常显示
+    const gameContent = document.getElementById('game-content');
+    gameContent.classList.remove('exit-down', 'enter-up', 'hidden');
     
     // 更新角色显示
     updateCharacterDisplay();
