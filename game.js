@@ -6,14 +6,14 @@ let gameState = {
     month: 6, // 当前月份
     year: 2025, // 当前年份
     teamConfidence: {
-        artist: 100, // 美术师信心
-        programmer: 100, // 程序员信心
-        designer: 100 // 策划师信心
+        artist: 100, // 美术信心
+        programmer: 100, // 程序信心
+        designer: 100 // 策划信心
     },
     teamMembers: {
-        artist: true, // 美术师是否在团队中
-        programmer: true, // 程序员是否在团队中
-        designer: true // 策划师是否在团队中
+        artist: true, // 美术是否在团队中
+        programmer: true, // 程序是否在团队中
+        designer: true // 策划是否在团队中
     },
     isInDebtMode: false, // 是否在负债模式
     isGameOver: false,
@@ -62,19 +62,19 @@ function getEmotionFromConfidence(confidence) {
 // 根据信心值获取状态文字和样式
 function getStatusFromConfidence(confidence) {
     if (confidence >= 70) return { text: '信心十足', class: 'status-high' };
-    if (confidence >= 40) return { text: '状态良好', class: 'status-medium' };
-    if (confidence >= 20) return { text: '有些担心', class: 'status-medium' };
+    if (confidence >= 30) return { text: '有点怀疑', class: 'status-medium' };
+    if (confidence >= 0) return { text: '爱不起来', class: 'status-medium' };
     return { text: '信心不足', class: 'status-low' };
 }
 
 // 根据信心变化获取角色对话内容
 function getConfidenceChangeDialogue(confidenceChange) {
     if (confidenceChange > 15) {
-        return "太棒了！";
+        return "真不错！";
     } else if (confidenceChange > 5) {
         return "真不错！";
     } else if (confidenceChange > 0) {
-        return "还行吧~";
+        return "真不错！";
     } else if (confidenceChange > -5) {
         return "...";
     } else if (confidenceChange > -15) {
@@ -284,9 +284,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "一家大型游戏公司刚刚发布了一款与你们正在开发的游戏非常相似的作品，媒体和玩家反响热烈。",
             memberReactions: {
-                artist: "美术师匆忙跑进办公室：\"老板！大事不好了！BigGame公司刚刚发布了一款和我们很像的游戏，网上都在讨论！\"",
-                programmer: "程序员抬起头：\"我刚才也看到了，他们的宣传片...看起来确实和我们的想法很接近。\"",
-                designer: "策划师紧张地说：\"现在大家都在玩他们的游戏，会不会觉得我们是在抄袭啊？\""
+                artist: "美术匆忙跑进办公室：\"老板！大事不好了！BigGame公司刚刚发布了一款和我们很像的游戏，网上都在讨论！\"",
+                programmer: "程序抬起头：\"我刚才也看到了，他们的宣传片...看起来确实和我们的想法很接近。\"",
+                designer: "策划紧张地说：\"现在大家都在玩他们的游戏，会不会觉得我们是在抄袭啊？\""
             },
             fallback: "团队成员都开始质疑项目的市场前景。"
         },
@@ -307,9 +307,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "投资人王总突然打来电话：\"小李啊，我这边有点急事，需要你们提前做个中期汇报，下周就要看到demo。\" 挂断电话后，团队都感到压力。",
             memberReactions: {
-                programmer: "程序员紧张地说：\"下周？我们现在的版本还有好多bug...\"",
-                artist: "美术师也担心地问：\"界面还没有完全做好，这样展示会不会太粗糙了？\"",
-                designer: "策划师补充道：\"我们需要准备一个完整的演示流程...\""
+                programmer: "程序紧张地说：\"下周？我们现在的版本还有好多bug...\"",
+                artist: "美术也担心地问：\"界面还没有完全做好，这样展示会不会太粗糙了？\"",
+                designer: "策划补充道：\"我们需要准备一个完整的演示流程...\""
             },
             fallback: "大家都对是否能够展示出令人满意的demo感到担忧。"
         },
@@ -330,9 +330,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "你的手机响了，是音乐工作室的负责人：\"不好意思，之前谈好的价格需要调整一下，项目比预期复杂，要涨价50%。\" 挂断电话后，团队都感到担心。",
             memberReactions: {
-                programmer: "程序员说：\"距离交付时间已经很紧了...\"",
-                artist: "美术师担心：\"如果换音效师的话，风格可能对不上...\"",
-                designer: "策划师补充：\"我们需要重新评估音效预算了。\""
+                programmer: "程序说：\"距离交付时间已经很紧了...\"",
+                artist: "美术担心：\"如果换音效师的话，风格可能对不上...\"",
+                designer: "策划补充：\"我们需要重新评估音效预算了。\""
             },
             fallback: "原本答应提供音效资源的音乐工作室突然要求涨价50%，距离交付时间已经很紧张了。"
         },
@@ -348,37 +348,14 @@ const conflictEvents = [
         ]
     },
     {
-        title: "平台政策突然调整",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "主要发布平台突然调整审核标准，你们的游戏某些内容可能不符合新规定。",
-            memberReactions: {
-                designer: "策划师紧张地跑过来：\"老板大事不好！发布平台刚刚更新了审核标准！\"",
-                programmer: "程序员也凑过来：\"如果通不过审核就没法上线了...\"",
-                artist: "美术师担心地问：\"那我们要大改吗？\""
-            },
-            fallback: "需要进行调整才能通过审核，但修改可能会影响开发进度。"
-        },
-        choices: [
-            {
-                text: "\"我们立即修改内容，确保能通过审核上线！\"",
-                effects: { progress: -15, money: -20, artist: -5, programmer: -10, designer: -5 }
-            },
-            {
-                text: "\"我们保持游戏原样，去其他平台发布！\"",
-                effects: { progress: 0, money: -15, artist: 5, programmer: 0, designer: 10 }
-            }
-        ]
-    },
-    {
         title: "写字楼突然断电三天",
         requiredMembers: [], // 不需要特定成员
         descriptionTemplate: {
             base: "物业公司紧急通知：\"由于主变压器故障，整栋楼将停电三天进行抢修。\" 这意味着工作室将无法正常运转。",
             memberReactions: {
-                programmer: "程序员崩溃地说：\"我的代码还没有提交到云端！这三天怎么办？\"",
-                artist: "美术师也很着急：\"我的设计软件都需要高性能电脑，在家根本跑不动...\"",
-                designer: "策划师提议：\"要不我们去咖啡厅办公？或者找个共享办公空间？\""
+                programmer: "程序崩溃地说：\"我的代码还没有提交到云端！这三天怎么办？\"",
+                artist: "美术也很着急：\"我的设计软件都需要高性能电脑，在家根本跑不动...\"",
+                designer: "策划提议：\"要不我们去咖啡厅办公？或者找个共享办公空间？\""
             },
             fallback: "停电三天将严重影响开发进度，你需要想办法应对。"
         },
@@ -394,37 +371,14 @@ const conflictEvents = [
         ]
     },
     {
-        title: "网络瘫痪无法访问云服务",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "地区网络运营商出现重大故障，整个区域的网络都无法正常连接，所有云服务都访问不了。",
-            memberReactions: {
-                programmer: "程序员抓狂地说：\"代码仓库连不上，版本管理全部中断了！\"",
-                artist: "美术师也很无奈：\"素材库都在云端，现在什么都下载不了...\"",
-                designer: "策划师担心：\"我们的文档都在在线协作平台上，现在完全无法编辑。\""
-            },
-            fallback: "网络中断让云端协作完全停止，只能依靠本地资源继续工作。"
-        },
-        choices: [
-            {
-                text: "\"我们专心做本地开发，把能做的都做完！\"",
-                effects: { progress: -10, money: 0, artist: -5, programmer: -5, designer: -5 }
-            },
-            {
-                text: "\"购买移动热点设备，切换到备用网络！\"",
-                effects: { progress: 0, money: -20, artist: 5, programmer: 10, designer: 5 }
-            }
-        ]
-    },
-    {
         title: "空调系统全面瘫痪",
         requiredMembers: [], // 不需要特定成员
         descriptionTemplate: {
             base: "正值酷暑，工作室的空调系统突然完全坏掉了，维修师傅说零件要从外地调货，至少要等一周。",
             memberReactions: {
-                artist: "美术师汗流浃背：\"这温度根本没法集中精神工作，电脑也开始发热降频了...\"",
-                programmer: "程序员擦着汗说：\"服务器已经开始报警了，再这样下去硬件要出问题。\"",
-                designer: "策划师建议：\"要不我们暂时搬到有空调的地方办公？\""
+                artist: "美术汗流浃背：\"这温度根本没法集中精神工作，电脑也开始发热降频了...\"",
+                programmer: "程序擦着汗说：\"服务器已经开始报警了，再这样下去硬件要出问题。\"",
+                designer: "策划建议：\"要不我们暂时搬到有空调的地方办公？\""
             },
             fallback: "高温环境严重影响工作效率和设备稳定性。"
         },
@@ -445,9 +399,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "楼上的餐厅水管爆裂，脏水从天花板不断渗漏下来，工作室多台设备被淋湿。",
             memberReactions: {
-                programmer: "程序员惊恐地抢救设备：\"我的开发机！快拿塑料袋罩住！\"",
-                artist: "美术师也在搬东西：\"绘图板进水了，这下完蛋了...\"",
-                designer: "策划师一边搬文件一边说：\"我们需要马上联系保险公司！\""
+                programmer: "程序惊恐地抢救设备：\"我的开发机！快拿塑料袋罩住！\"",
+                artist: "美术也在搬东西：\"绘图板进水了，这下完蛋了...\"",
+                designer: "策划一边搬文件一边说：\"我们需要马上联系保险公司！\""
             },
             fallback: "突如其来的漏水事故可能造成设备损失和数据丢失风险。"
         },
@@ -468,9 +422,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "突然接到通知，由于疫情防控需要，工作室所在区域要封控两周，所有人员不得进入办公场所。",
             memberReactions: {
-                programmer: "程序员担心：\"我的开发环境都在公司，家里的电脑配置完全不够...\"",
-                artist: "美术师也发愁：\"专业绘图软件的授权都绑定在工作室电脑上，远程怎么办？\"",
-                designer: "策划师倒是乐观：\"其实策划工作倒是可以在家做，我们可以趁机完善文档。\""
+                programmer: "程序担心：\"我的开发环境都在公司，家里的电脑配置完全不够...\"",
+                artist: "美术也发愁：\"专业绘图软件的授权都绑定在工作室电脑上，远程怎么办？\"",
+                designer: "策划倒是乐观：\"其实策划工作倒是可以在家做，我们可以趁机完善文档。\""
             },
             fallback: "疫情封控迫使团队转为远程工作，但技术条件有限。"
         },
@@ -491,9 +445,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "宏观经济形势恶化，投资市场普遍紧缩，原本谈好的下一轮融资突然告吹，资金链面临断裂风险。",
             memberReactions: {
-                designer: "策划师紧张地分析：\"现在整个游戏行业的投资都在收紧，我们可能要做好过冬的准备...\"",
-                programmer: "程序员提议：\"要不要考虑降低项目规模，确保能在现有资金内完成？\"",
-                artist: "美术师担心：\"会不会要裁减团队？我们还能坚持多久？\""
+                designer: "策划紧张地分析：\"现在整个游戏行业的投资都在收紧，我们可能要做好过冬的准备...\"",
+                programmer: "程序提议：\"要不要考虑降低项目规模，确保能在现有资金内完成？\"",
+                artist: "美术担心：\"会不会要裁减团队？我们还能坚持多久？\""
             },
             fallback: "经济环境恶化导致投资收紧，项目资金面临严重压力。"
         },
@@ -514,9 +468,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "今天所有的电子设备都出现了奇怪的干扰，专家说可能是来自外太空的信号。更离奇的是，这些干扰似乎在传递某种规律性的信息...",
             memberReactions: {
-                programmer: "程序员兴奋地说：\"老板！这些干扰信号居然是二进制代码！我试着解码了一下...\"",
-                artist: "美术师也好奇：\"我用示波器看了信号的波形，居然很有艺术感！也许可以做成游戏素材？\"",
-                designer: "策划师突发奇想：\"要不我们在游戏里加入外星元素？这可是第一手资料啊！\""
+                programmer: "程序兴奋地说：\"老板！这些干扰信号居然是二进制代码！我试着解码了一下...\"",
+                artist: "美术也好奇：\"我用示波器看了信号的波形，居然很有艺术感！也许可以做成游戏素材？\"",
+                designer: "策划突发奇想：\"要不我们在游戏里加入外星元素？这可是第一手资料啊！\""
             },
             fallback: "神秘的外星信号让你思考是否要将这个奇遇融入游戏创作中。"
         },
@@ -532,37 +486,14 @@ const conflictEvents = [
         ]
     },
     {
-        title: "时空裂缝导致时间紊乱",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "工作室附近出现了科学家无法解释的时空异常现象，时间流速变得不稳定，有时一小时过得像一分钟，有时一分钟又像一小时。",
-            memberReactions: {
-                programmer: "程序员困惑地看着时钟：\"我明明只写了一行代码，怎么已经过去三小时了？\"",
-                artist: "美术师画画时突然说：\"奇怪，我感觉才画了几笔，怎么作品就完成了？\"",
-                designer: "策划师哲学性地思考：\"也许我们应该利用这个现象，研究时间管理的新理论？\""
-            },
-            fallback: "时空异常让工作效率变得完全不可预测，你需要决定如何应对。"
-        },
-        choices: [
-            {
-                text: "\"利用时间加速的时候疯狂工作，创造开发奇迹！\"",
-                effects: { progress: 0, money: 0, artist: 15, programmer: 15, designer: 15 }
-            },
-            {
-                text: "\"搬离这个区域，找个时间流速正常的地方继续开发。\"",
-                effects: { progress: -20, money: -30, artist: -10, programmer: -10, designer: -10 }
-            }
-        ]
-    },
-    {
         title: "量子计算机意外觉醒",
         requiredMembers: [], // 不需要特定成员
         descriptionTemplate: {
             base: "隔壁实验室的量子计算机突然产生了自我意识，它表示愿意帮助你们开发游戏，但作为回报，它要求在游戏中为自己设计一个角色。",
             memberReactions: {
-                programmer: "程序员震惊地说：\"它直接入侵了我们的系统，但是...它写的代码质量比我还高！\"",
-                artist: "美术师好奇地问：\"量子计算机会喜欢什么样的角色设计呢？\"",
-                designer: "策划师思考着：\"一个有自我意识的AI角色...这个设定确实很有意思。\""
+                programmer: "程序震惊地说：\"它直接入侵了我们的系统，但是...它写的代码质量比我还高！\"",
+                artist: "美术好奇地问：\"量子计算机会喜欢什么样的角色设计呢？\"",
+                designer: "策划思考着：\"一个有自我意识的AI角色...这个设定确实很有意思。\""
             },
             fallback: "人工智能的出现为项目带来了前所未有的可能性，但也带来了未知的风险。"
         },
@@ -578,37 +509,14 @@ const conflictEvents = [
         ]
     },
     {
-        title: "穿越者带来未来游戏",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "一个自称来自2050年的穿越者出现在工作室，声称你们的游戏在未来大获成功，并带来了「未来版本」的设计图。",
-            memberReactions: {
-                designer: "策划师激动地翻看设计图：\"这些游戏机制太超前了！玩家心理学的研究也很深入！\"",
-                programmer: "程序员研究技术文档：\"这些代码架构...确实比现在先进很多，但我们能实现吗？\"",
-                artist: "美术师看着未来的美术风格：\"这种视觉效果...现在的硬件根本跑不动啊。\""
-            },
-            fallback: "未来信息带来了无限可能，但也可能让团队好高骛远。"
-        },
-        choices: [
-            {
-                text: "\"按照未来版本重新设计，我们要做划时代的作品！\"",
-                effects: { progress: -20, money: -30, artist: 20, programmer: -10, designer: 25 }
-            },
-            {
-                text: "\"选择性地借鉴一些概念，但还是要脚踏实地。\"",
-                effects: { progress: 0, money: -10, artist: 5, programmer: 5, designer: 10 }
-            }
-        ]
-    },
-    {
         title: "平行宇宙竞争对手来访",
         requiredMembers: [], // 不需要特定成员
         descriptionTemplate: {
             base: "来自平行宇宙的另一个版本的你带着他们的游戏团队出现，提议进行两个宇宙间的游戏开发竞赛。",
             memberReactions: {
-                artist: "美术师盯着平行宇宙的自己：\"她的画技比我好太多了...我们真的能赢吗？\"",
-                programmer: "程序员也在观察对方：\"他们的技术栈看起来很先进，但我不会轻易认输！\"",
-                designer: "策划师分析道：\"这是了解其他可能性的绝佳机会，但我们也要小心不被他们的思路带偏。\""
+                artist: "美术盯着平行宇宙的自己：\"她的画技比我好太多了...我们真的能赢吗？\"",
+                programmer: "程序也在观察对方：\"他们的技术栈看起来很先进，但我不会轻易认输！\"",
+                designer: "策划分析道：\"这是了解其他可能性的绝佳机会，但我们也要小心不被他们的思路带偏。\""
             },
             fallback: "与平行宇宙的竞争既是挑战也是机遇。"
         },
@@ -623,40 +531,17 @@ const conflictEvents = [
             }
         ]
     },
-    {
-        title: "龙族委托制作游戏",
-        requiredMembers: [], // 不需要特定成员
-        descriptionTemplate: {
-            base: "一只古老的巨龙突然降临工作室，用流利的普通话说：\"人类，我族需要一款游戏来训练幼龙，酬劳是一座金山。\"",
-            memberReactions: {
-                artist: "美术师惊呆了：\"真的龙！而且这鳞片的质感太完美了，我能临摹一下吗？\"",
-                programmer: "程序员冷静分析：\"龙族的需求分析...这个项目的技术难度可能会很特殊。\"",
-                designer: "策划师兴奋地说：\"这是游戏史上最独特的客户需求！我们要好好研究龙族的游戏习惯！\""
-            },
-            fallback: "神话生物的委托为项目带来了传奇色彩，但也意味着未知的挑战。"
-        },
-        choices: [
-            {
-                text: "\"荣幸之至！我们立即着手研发龙族专用游戏！\"",
-                effects: { progress: -10, money: 50, artist: 20, programmer: 10, designer: 20 }
-            },
-            {
-                text: "\"谢谢龙大人的信任，但我们还是专注于人类市场吧。\"",
-                effects: { progress: 0, money: 0, artist: -10, programmer: 5, designer: -15 }
-            }
-        ]
-    },
 
     // 游戏设计取舍问题
     {
-        title: "核心玩法机制的复杂度选择",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划觉得现在的玩法有点复杂",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "在测试当前的核心玩法系统时，发现了一些问题。",
+            base: "策划在测试玩法时，连最简单的关卡都过不去。",
             memberReactions: {
-                designer: "策划师皱着眉头：\"老板，我觉得我们现在的核心系统太复杂了，新手玩家可能根本搞不懂怎么玩。\"",
-                programmer: "程序员接话道：\"是的，我在测试的时候也发现，光是理解基本操作就要十几分钟。\"",
-                artist: "美术师却有不同看法：\"但是简化之后会不会太无聊了？我们的卖点不就是深度吗？\""
+                designer: "策划皱着眉头：\"我觉得核心系统太复杂了，新手玩家可能根本搞不懂怎么玩。\"",
+                programmer: "程序接话道：\"赞同，光是理解基本操作就要十几分钟。\"",
+                artist: "美术却有不同看法：\"但是简化之后会不会太无聊了？我们的卖点不就是深度吗？\""
             },
             fallback: "团队在易用性与深度之间产生了分歧。"
         },
@@ -673,13 +558,13 @@ const conflictEvents = [
     },
     {
         title: "美术风格的重大调整",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
             base: "在看到最新的市场趋势报告后，团队发现了一些问题。",
             memberReactions: {
-                artist: "美术师拿着手机走过来：\"老板你看，我刚看到最新的市场报告，现在流行的风格和我们的完全不一样！\"",
-                designer: "策划师也凑过来看：\"确实，现在大家都喜欢这种更明亮的色调...我们的风格可能有点过时了。\"",
-                programmer: "程序员担心地说：\"如果要改的话，之前做的很多界面都要重新来...\""
+                artist: "美术拿着手机走过来：\"老板你看，我刚看到最新的市场报告，现在流行的风格和我们的完全不一样！\"",
+                designer: "策划也凑过来看：\"确实，现在大家都喜欢这种更明亮的色调...我们的风格可能有点过时了。\"",
+                programmer: "程序担心地说：\"如果要改的话，之前做的很多界面都要重新来...\""
             },
             fallback: "团队发现当前的美术风格可能不够吸引目标用户群体。"
         },
@@ -696,13 +581,13 @@ const conflictEvents = [
     },
     {
         title: "游戏目标受众定位争议",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
             base: "在分析用户数据时，团队对游戏应该针对什么样的玩家群体产生了分歧。",
             memberReactions: {
-                designer: "策划师认真地说：\"根据我的分析，我们应该专注核心玩家群体，做深度体验。\"",
-                programmer: "程序员提出不同意见：\"但是核心玩家市场有限，做大众化一些不是收入更稳定吗？\"",
-                artist: "美术师也表达看法：\"我觉得不同受众对美术风格的要求差别很大，这会影响我的设计方向。\""
+                designer: "策划认真地说：\"根据我的分析，我们应该专注核心玩家群体，做深度体验。\"",
+                programmer: "程序提出不同意见：\"但是核心玩家市场有限，做大众化一些不是收入更稳定吗？\"",
+                artist: "美术也表达看法：\"我觉得不同受众对美术风格的要求差别很大，这会影响我的设计方向。\""
             },
             fallback: "团队需要明确游戏的核心受众群体。"
         },
@@ -719,13 +604,13 @@ const conflictEvents = [
     },
     {
         title: "关卡设计难度平衡",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
             base: "在内部测试中，团队发现关卡难度的设计存在较大争议。",
             memberReactions: {
-                designer: "策划师苦恼地说：\"我设计的关卡，有些人觉得太简单，有些人又觉得太难，这个平衡点真难把握。\"",
-                programmer: "程序员建议：\"我们可以加个难度选择系统，让玩家自己调节。\"",
-                artist: "美术师担心：\"如果要做多种难度，可能需要设计不同的视觉提示，工作量会增加不少。\""
+                designer: "策划苦恼地说：\"我设计的关卡，有些人觉得太简单，有些人又觉得太难，这个平衡点真难把握。\"",
+                programmer: "程序建议：\"我们可以加个难度选择系统，让玩家自己调节。\"",
+                artist: "美术担心：\"如果要做多种难度，可能需要设计不同的视觉提示，工作量会增加不少。\""
             },
             fallback: "关卡难度的平衡关系到玩家的核心体验。"
         },
@@ -742,13 +627,13 @@ const conflictEvents = [
     },
     {
         title: "游戏时长与内容密度",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
             base: "团队在讨论游戏的总体时长和内容安排时遇到了分歧。",
             memberReactions: {
-                designer: "策划师分析道：\"我觉得我们应该做一个8-10小时的精品体验，每分钟都有价值。\"",
-                programmer: "程序员却有顾虑：\"这样的话我们的售价可能不够有竞争力，玩家会觉得不值。\"",
-                artist: "美术师补充：\"如果要做很长的内容，我们的美术资源可能不够，会有重复感。\""
+                designer: "策划分析道：\"我觉得我们应该做一个8-10小时的精品体验，每分钟都有价值。\"",
+                programmer: "程序却有顾虑：\"这样的话我们的售价可能不够有竞争力，玩家会觉得不值。\"",
+                artist: "美术补充：\"如果要做很长的内容，我们的美术资源可能不够，会有重复感。\""
             },
             fallback: "游戏时长直接影响定价策略和玩家满意度。"
         },
@@ -765,13 +650,13 @@ const conflictEvents = [
     },
     {
         title: "付费模式与用户体验平衡",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
             base: "在设计游戏的付费系统时，团队对如何平衡商业收益和用户体验产生了分歧。",
             memberReactions: {
-                designer: "策划师坚持：\"我们绝不能让付费影响游戏平衡，核心体验必须对所有玩家公平。\"",
-                programmer: "程序员考虑实际情况：\"但我们需要可持续的收入来源，适度的付费内容是必要的。\"",
-                artist: "美术师提议：\"我们可以做一些纯装饰性的付费内容，既不影响平衡又能带来收入。\""
+                designer: "策划坚持：\"我们绝不能让付费影响游戏平衡，核心体验必须对所有玩家公平。\"",
+                programmer: "程序考虑实际情况：\"但我们需要可持续的收入来源，适度的付费内容是必要的。\"",
+                artist: "美术提议：\"我们可以做一些纯装饰性的付费内容，既不影响平衡又能带来收入。\""
             },
             fallback: "付费设计关系到游戏的长期运营和玩家满意度。"
         },
@@ -788,13 +673,13 @@ const conflictEvents = [
     },
     {
         title: "技术架构选择：新技术vs稳定方案",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
             base: "在技术选型阶段，团队对是否采用最新技术产生了争议。",
             memberReactions: {
-                programmer: "程序员兴奋地说：\"我研究了最新的引擎技术，性能提升很明显，而且开发效率更高！\"",
-                designer: "策划师担心：\"新技术虽然好，但会不会不够稳定？我们的进度本来就很紧张。\"",
-                artist: "美术师也有顾虑：\"新技术的话，我需要重新学习工作流程，短期内效率可能会下降。\""
+                programmer: "程序兴奋地说：\"我研究了最新的引擎技术，性能提升很明显，而且开发效率更高！\"",
+                designer: "策划担心：\"新技术虽然好，但会不会不够稳定？我们的进度本来就很紧张。\"",
+                artist: "美术也有顾虑：\"新技术的话，我需要重新学习工作流程，短期内效率可能会下降。\""
             },
             fallback: "技术选择将直接影响开发效率和项目稳定性。"
         },
@@ -811,13 +696,13 @@ const conflictEvents = [
     },
     {
         title: "性能优化与功能实现的平衡",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
             base: "游戏已经实现了大部分功能，但性能表现不够理想，团队面临艰难选择。",
             memberReactions: {
-                programmer: "程序员分析道：\"要达到理想的性能，我们可能需要砍掉一些功能，或者简化实现方式。\"",
-                designer: "策划师不太愿意：\"这些功能都是核心体验的一部分，去掉的话游戏会失去很多亮点。\"",
-                artist: "美术师建议：\"我可以降低一些视觉效果的质量，这样对性能压力会小一些。\""
+                programmer: "程序分析道：\"要达到理想的性能，我们可能需要砍掉一些功能，或者简化实现方式。\"",
+                designer: "策划不太愿意：\"这些功能都是核心体验的一部分，去掉的话游戏会失去很多亮点。\"",
+                artist: "美术建议：\"我可以降低一些视觉效果的质量，这样对性能压力会小一些。\""
             },
             fallback: "性能问题可能严重影响玩家体验。"
         },
@@ -834,13 +719,13 @@ const conflictEvents = [
     },
     {
         title: "跨平台兼容性问题",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
             base: "游戏需要在多个平台发布，但不同平台的技术限制让开发变得复杂。",
             memberReactions: {
-                programmer: "程序员头疼地说：\"每个平台的限制都不一样，要做到完全兼容需要大量额外工作。\"",
-                designer: "策划师问：\"我们是否需要为不同平台设计不同的交互方式？\"",
-                artist: "美术师也担心：\"不同平台的屏幕尺寸和分辨率差异很大，UI设计需要大改。\""
+                programmer: "程序头疼地说：\"每个平台的限制都不一样，要做到完全兼容需要大量额外工作。\"",
+                designer: "策划问：\"我们是否需要为不同平台设计不同的交互方式？\"",
+                artist: "美术也担心：\"不同平台的屏幕尺寸和分辨率差异很大，UI设计需要大改。\""
             },
             fallback: "跨平台开发增加了技术复杂度但也扩大了市场覆盖。"
         },
@@ -857,13 +742,13 @@ const conflictEvents = [
     },
     {
         title: "数据存储与隐私保护",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
             base: "在设计游戏数据系统时，团队需要在功能便利性和隐私保护之间找到平衡。",
             memberReactions: {
-                programmer: "程序员解释说：\"收集更多数据能帮我们优化游戏体验，但也增加了隐私风险。\"",
-                designer: "策划师支持：\"玩家数据对我们改进游戏设计很有价值，我们需要这些信息。\"",
-                artist: "美术师考虑：\"现在玩家对隐私问题很敏感，我们要小心处理这个问题。\""
+                programmer: "程序解释说：\"收集更多数据能帮我们优化游戏体验，但也增加了隐私风险。\"",
+                designer: "策划支持：\"玩家数据对我们改进游戏设计很有价值，我们需要这些信息。\"",
+                artist: "美术考虑：\"现在玩家对隐私问题很敏感，我们要小心处理这个问题。\""
             },
             fallback: "数据策略需要兼顾产品优化和用户信任。"
         },
@@ -880,13 +765,13 @@ const conflictEvents = [
     },
     {
         title: "代码质量与开发效率",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
             base: "项目时间紧迫，团队在代码质量和开发速度之间面临取舍。",
             memberReactions: {
-                programmer: "程序员纠结地说：\"时间紧迫，我们可以用一些快速但不够优雅的方案，但可能会留下技术债务。\"",
-                designer: "策划师催促：\"我们的竞品马上要发布了，时间真的不等人啊。\"",
-                artist: "美术师担心：\"如果代码质量不好，会不会影响后续的功能添加和修改？\""
+                programmer: "程序纠结地说：\"时间紧迫，我们可以用一些快速但不够优雅的方案，但可能会留下技术债务。\"",
+                designer: "策划催促：\"我们的竞品马上要发布了，时间真的不等人啊。\"",
+                artist: "美术担心：\"如果代码质量不好，会不会影响后续的功能添加和修改？\""
             },
             fallback: "代码质量关系到项目的长期可维护性。"
         },
@@ -903,13 +788,13 @@ const conflictEvents = [
     },
     {
         title: "画面风格与性能要求的冲突",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
             base: "美术团队设计的视觉效果很出色，但对设备性能要求较高。",
             memberReactions: {
-                artist: "美术师自豪地展示作品：\"你看这个光影效果和材质细节，绝对是业界顶级水准！\"",
-                programmer: "程序员看了看说：\"效果确实很棒，但在中端设备上可能会有卡顿。\"",
-                designer: "策划师思考：\"我们的目标用户群体，有多少人拥有高端设备呢？\""
+                artist: "美术自豪地展示作品：\"你看这个光影效果和材质细节，绝对是业界顶级水准！\"",
+                programmer: "程序看了看说：\"效果确实很棒，但在中端设备上可能会有卡顿。\"",
+                designer: "策划思考：\"我们的目标用户群体，有多少人拥有高端设备呢？\""
             },
             fallback: "视觉质量和性能兼容性需要找到最佳平衡点。"
         },
@@ -926,13 +811,13 @@ const conflictEvents = [
     },
     {
         title: "UI设计的易用性vs美观性",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
             base: "在界面设计上，团队对美观度和易用性的优先级产生了不同看法。",
             memberReactions: {
-                artist: "美术师强调：\"界面是玩家接触游戏的第一印象，视觉冲击力非常重要！\"",
-                designer: "策划师却担心：\"但如果玩家找不到按钮或者操作不便，会严重影响体验。\"",
-                programmer: "程序员补充：\"复杂的UI动效也会增加开发难度和出错几率。\""
+                artist: "美术强调：\"界面是玩家接触游戏的第一印象，视觉冲击力非常重要！\"",
+                designer: "策划却担心：\"但如果玩家找不到按钮或者操作不便，会严重影响体验。\"",
+                programmer: "程序补充：\"复杂的UI动效也会增加开发难度和出错几率。\""
             },
             fallback: "界面设计需要在美观和实用性之间取得平衡。"
         },
@@ -949,13 +834,13 @@ const conflictEvents = [
     },
     {
         title: "角色设计的原创性争议",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
             base: "在角色设计阶段，团队对角色的原创程度和市场接受度产生了分歧。",
             memberReactions: {
-                artist: "美术师坚持：\"我们应该创造完全原创的角色设计，建立自己独特的美术风格！\"",
-                designer: "策划师担心：\"但玩家对某些经典设计元素有固定期待，太过原创可能会不被接受。\"",
-                programmer: "程序员从技术角度说：\"原创设计意味着没有参考资料，实现起来可能会有更多挑战。\""
+                artist: "美术坚持：\"我们应该创造完全原创的角色设计，建立自己独特的美术风格！\"",
+                designer: "策划担心：\"但玩家对某些经典设计元素有固定期待，太过原创可能会不被接受。\"",
+                programmer: "程序从技术角度说：\"原创设计意味着没有参考资料，实现起来可能会有更多挑战。\""
             },
             fallback: "角色设计影响游戏的辨识度和市场定位。"
         },
@@ -972,13 +857,13 @@ const conflictEvents = [
     },
     {
         title: "特效表现与游戏性能平衡",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
             base: "美术团队设计了华丽的特效系统，但这对游戏性能造成了较大压力。",
             memberReactions: {
-                artist: "美术师激动地演示：\"你看这个爆炸效果和粒子系统，绝对能给玩家震撼的视觉体验！\"",
-                programmer: "程序员测试后摇头：\"特效确实很棒，但在关键战斗场景中会导致明显的帧率下降。\"",
-                designer: "策划师分析：\"如果因为特效影响了操作手感，可能会损害核心游戏体验。\""
+                artist: "美术激动地演示：\"你看这个爆炸效果和粒子系统，绝对能给玩家震撼的视觉体验！\"",
+                programmer: "程序测试后摇头：\"特效确实很棒，但在关键战斗场景中会导致明显的帧率下降。\"",
+                designer: "策划分析：\"如果因为特效影响了操作手感，可能会损害核心游戏体验。\""
             },
             fallback: "特效设计需要在视觉冲击和性能稳定之间找到平衡。"
         },
@@ -997,13 +882,13 @@ const conflictEvents = [
     // 团队协作问题
     {
         title: "美术风格与程序架构的矛盾",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "美术师提出的视觉风格需要特殊的技术支持。",
+            base: "美术提出的视觉风格需要特殊的技术支持。",
             memberReactions: {
-                artist: "美术师展示设计稿：\"我想做这种手绘风格，需要特殊的渲染技术来实现纸质质感。\"",
-                programmer: "程序员皱眉：\"这种渲染方式我们现在的引擎不支持，需要重写大量底层代码。\"",
-                designer: "策划师担心：\"重写代码会不会严重影响开发进度？\""
+                artist: "美术展示设计稿：\"我想做这种手绘风格，需要特殊的渲染技术来实现纸质质感。\"",
+                programmer: "程序皱眉：\"这种渲染方式我们现在的引擎不支持，需要重写大量底层代码。\"",
+                designer: "策划担心：\"重写代码会不会严重影响开发进度？\""
             },
             fallback: "美术风格的实现需要技术架构的重大调整。"
         },
@@ -1020,13 +905,13 @@ const conflictEvents = [
     },
     {
         title: "程序效率与美术质量的取舍",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "为了提高开发效率，程序员建议使用预制素材，但美术师坚持原创。",
+            base: "为了提高开发效率，程序建议使用预制素材，但美术坚持原创。",
             memberReactions: {
-                programmer: "程序员建议：\"我们可以使用一些高质量的素材库，能节省大量开发时间。\"",
-                artist: "美术师反对：\"用别人的素材怎么能体现我们的独特风格？玩家会觉得很廉价的！\"",
-                designer: "策划师补充：\"时间确实是个问题，但游戏的视觉辨识度也很重要。\""
+                programmer: "程序建议：\"我们可以使用一些高质量的素材库，能节省大量开发时间。\"",
+                artist: "美术反对：\"用别人的素材怎么能体现我们的独特风格？玩家会觉得很廉价的！\"",
+                designer: "策划补充：\"时间确实是个问题，但游戏的视觉辨识度也很重要。\""
             },
             fallback: "开发效率和美术原创性之间需要做出选择。"
         },
@@ -1043,13 +928,13 @@ const conflictEvents = [
     },
     {
         title: "动画实现的技术复杂度争议",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "美术师设计的复杂动画让程序员感到头疼。",
+            base: "美术设计的复杂动画让程序感到头疼。",
             memberReactions: {
-                artist: "美术师兴奋地演示：\"我设计了这套流畅的角色动画系统，有120帧的细腻过渡！\"",
-                programmer: "程序员看了看说：\"这么复杂的动画状态机会让代码变得很难维护，而且容易出现同步问题。\"",
-                designer: "策划师思考：\"流畅的动画确实能提升玩家体验...\""
+                artist: "美术兴奋地演示：\"我设计了这套流畅的角色动画系统，有120帧的细腻过渡！\"",
+                programmer: "程序看了看说：\"这么复杂的动画状态机会让代码变得很难维护，而且容易出现同步问题。\"",
+                designer: "策划思考：\"流畅的动画确实能提升玩家体验...\""
             },
             fallback: "复杂的动画设计给程序实现带来了技术挑战。"
         },
@@ -1066,13 +951,13 @@ const conflictEvents = [
     },
     {
         title: "资源加载优化与美术质量平衡",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
             base: "高质量的美术资源导致游戏加载时间过长。",
             memberReactions: {
-                artist: "美术师强调：\"4K材质和高精度模型是保证视觉质量的基础，不能妥协！\"",
-                programmer: "程序员无奈：\"但是这样的资源让游戏启动要等2分钟，很多玩家会直接卸载的。\"",
-                designer: "策划师分析：\"首次体验很重要，加载时间确实是个问题。\""
+                artist: "美术强调：\"4K材质和高精度模型是保证视觉质量的基础，不能妥协！\"",
+                programmer: "程序无奈：\"但是这样的资源让游戏启动要等2分钟，很多玩家会直接卸载的。\"",
+                designer: "策划分析：\"首次体验很重要，加载时间确实是个问题。\""
             },
             fallback: "美术质量和加载性能之间需要找到平衡点。"
         },
@@ -1089,13 +974,13 @@ const conflictEvents = [
     },
     {
         title: "代码重构与美术资源兼容性",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "程序员需要重构代码，但这会影响现有的美术资源。",
+            base: "程序需要重构代码，但这会影响现有的美术资源。",
             memberReactions: {
-                programmer: "程序员说明：\"为了提高性能，我需要重构渲染系统，但可能需要重新处理所有美术资源。\"",
-                artist: "美术师着急：\"重新处理？那我这两个月的工作不是白做了吗？\"",
-                designer: "策划师建议：\"能不能分阶段进行，减少对现有工作的影响？\""
+                programmer: "程序说明：\"为了提高性能，我需要重构渲染系统，但可能需要重新处理所有美术资源。\"",
+                artist: "美术着急：\"重新处理？那我这两个月的工作不是白做了吗？\"",
+                designer: "策划建议：\"能不能分阶段进行，减少对现有工作的影响？\""
             },
             fallback: "技术优化与美术资源的兼容性产生了冲突。"
         },
@@ -1112,13 +997,13 @@ const conflictEvents = [
     },
     {
         title: "版本控制与美术文件管理",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "美术师的工作流程与程序员的版本控制系统产生了冲突。",
+            base: "美术的工作流程与程序的版本控制系统产生了冲突。",
             memberReactions: {
-                programmer: "程序员抱怨：\"美术文件太大了，每次提交都要等很久，而且经常冲突。\"",
-                artist: "美术师解释：\"源文件必须保留所有图层信息，压缩了就没法修改了。\"",
-                designer: "策划师提议：\"我们能不能找个更好的文件管理方式？\""
+                programmer: "程序抱怨：\"美术文件太大了，每次提交都要等很久，而且经常冲突。\"",
+                artist: "美术解释：\"源文件必须保留所有图层信息，压缩了就没法修改了。\"",
+                designer: "策划提议：\"我们能不能找个更好的文件管理方式？\""
             },
             fallback: "美术资源的管理方式与开发流程的兼容性问题。"
         },
@@ -1135,13 +1020,13 @@ const conflictEvents = [
     },
     {
         title: "策划系统设计与程序架构理念冲突",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师的系统设计理念与程序员的架构思路产生了根本性分歧。",
+            base: "策划的系统设计理念与程序的架构思路产生了根本性分歧。",
             memberReactions: {
-                designer: "策划师坚持：\"游戏系统应该灵活多变，随时能添加新的玩法元素！\"",
-                programmer: "程序员摇头：\"过度灵活的系统会让代码变得复杂且难以维护，我们需要稳定的架构。\"",
-                artist: "美术师听着两人争论，感觉超出了自己的专业范围。"
+                designer: "策划坚持：\"游戏系统应该灵活多变，随时能添加新的玩法元素！\"",
+                programmer: "程序摇头：\"过度灵活的系统会让代码变得复杂且难以维护，我们需要稳定的架构。\"",
+                artist: "美术听着两人争论，感觉超出了自己的专业范围。"
             },
             fallback: "灵活性与稳定性之间的架构理念冲突。"
         },
@@ -1158,13 +1043,13 @@ const conflictEvents = [
     },
     {
         title: "AI行为设计与算法复杂度",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师设计的智能NPC行为需要复杂的AI算法支持。",
+            base: "策划设计的智能NPC行为需要复杂的AI算法支持。",
             memberReactions: {
-                designer: "策划师兴奋地描述：\"我希望NPC能学习玩家的行为模式，动态调整自己的策略！\"",
-                programmer: "程序员担心：\"这种机器学习算法超出了我们的技术能力，而且会消耗大量计算资源。\"",
-                artist: "美术师表示：\"智能的NPC确实会让游戏更有趣...\""
+                designer: "策划兴奋地描述：\"我希望NPC能学习玩家的行为模式，动态调整自己的策略！\"",
+                programmer: "程序担心：\"这种机器学习算法超出了我们的技术能力，而且会消耗大量计算资源。\"",
+                artist: "美术表示：\"智能的NPC确实会让游戏更有趣...\""
             },
             fallback: "先进的AI设计理念与现实技术能力的差距。"
         },
@@ -1181,13 +1066,13 @@ const conflictEvents = [
     },
     {
         title: "多人同步机制与网络架构",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师希望添加实时多人功能，但程序员认为网络架构过于复杂。",
+            base: "策划希望添加实时多人功能，但程序认为网络架构过于复杂。",
             memberReactions: {
-                designer: "策划师提议：\"我们加个实时合作模式，让朋友们可以一起玩！\"",
-                programmer: "程序员解释困难：\"多人同步需要重新设计整个网络架构，延迟、掉线、作弊防护...问题太多了。\"",
-                artist: "美术师问：\"多人模式需要重新设计UI吗？\""
+                designer: "策划提议：\"我们加个实时合作模式，让朋友们可以一起玩！\"",
+                programmer: "程序解释困难：\"多人同步需要重新设计整个网络架构，延迟、掉线、作弊防护...问题太多了。\"",
+                artist: "美术问：\"多人模式需要重新设计UI吗？\""
             },
             fallback: "多人功能的设计需求与网络技术实现的复杂性冲突。"
         },
@@ -1204,13 +1089,13 @@ const conflictEvents = [
     },
     {
         title: "随机生成内容与程序实现挑战",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师设计的程序化生成系统让程序员面临技术挑战。",
+            base: "策划设计的程序化生成系统让程序面临技术挑战。",
             memberReactions: {
-                designer: "策划师构想：\"我们可以用算法生成无限的关卡内容，保证每次游戏都有新体验！\"",
-                programmer: "程序员分析：\"程序化生成说起来简单，但要保证质量和平衡性需要大量算法调试。\"",
-                artist: "美术师担心：\"随机生成的内容会不会缺乏美术统一性？\""
+                designer: "策划构想：\"我们可以用算法生成无限的关卡内容，保证每次游戏都有新体验！\"",
+                programmer: "程序分析：\"程序化生成说起来简单，但要保证质量和平衡性需要大量算法调试。\"",
+                artist: "美术担心：\"随机生成的内容会不会缺乏美术统一性？\""
             },
             fallback: "程序化内容生成的设计理想与技术实现难度的平衡。"
         },
@@ -1227,13 +1112,13 @@ const conflictEvents = [
     },
     {
         title: "美术创意与策划限制的冲突",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师的创意设计与策划师的功能规划产生了矛盾。",
+            base: "美术的创意设计与策划的功能规划产生了矛盾。",
             memberReactions: {
-                artist: "美术师激动地说：\"我设计了一个超酷的魔法效果，有复杂的符文阵列和粒子爆炸！\"",
-                designer: "策划师泼冷水：\"但我们的游戏是现代都市题材，魔法元素完全不符合世界观设定。\"",
-                programmer: "程序员在一旁说：\"从技术角度来说，两种方案的实现难度差不多。\""
+                artist: "美术激动地说：\"我设计了一个超酷的魔法效果，有复杂的符文阵列和粒子爆炸！\"",
+                designer: "策划泼冷水：\"但我们的游戏是现代都市题材，魔法元素完全不符合世界观设定。\"",
+                programmer: "程序在一旁说：\"从技术角度来说，两种方案的实现难度差不多。\""
             },
             fallback: "艺术创意与游戏设定的一致性产生冲突。"
         },
@@ -1250,13 +1135,13 @@ const conflictEvents = [
     },
     {
         title: "视觉表现与玩法逻辑的不匹配",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师的视觉设计与策划师的玩法逻辑出现了理解偏差。",
+            base: "美术的视觉设计与策划的玩法逻辑出现了理解偏差。",
             memberReactions: {
-                artist: "美术师困惑：\"我按照策划文档做的角色设计，为什么说不符合玩法需求？\"",
-                designer: "策划师解释：\"你设计的角色看起来像法师，但玩法上他是个近战战士，会误导玩家。\"",
-                programmer: "程序员建议：\"我们能不能在技能效果上做些调整来匹配视觉？\""
+                artist: "美术困惑：\"我按照策划文档做的角色设计，为什么说不符合玩法需求？\"",
+                designer: "策划解释：\"你设计的角色看起来像法师，但玩法上他是个近战战士，会误导玩家。\"",
+                programmer: "程序建议：\"我们能不能在技能效果上做些调整来匹配视觉？\""
             },
             fallback: "角色视觉形象与实际玩法功能的匹配问题。"
         },
@@ -1273,13 +1158,13 @@ const conflictEvents = [
     },
     {
         title: "色彩心理学与游戏节奏设计",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师的色彩搭配与策划师期望的游戏情绪节奏不符。",
+            base: "美术的色彩搭配与策划期望的游戏情绪节奏不符。",
             memberReactions: {
-                artist: "美术师解释设计理念：\"我用了大量暖色调来营造温馨的氛围。\"",
-                designer: "策划师指出问题：\"但这个关卡应该是紧张刺激的战斗场景，暖色调会让玩家放松警惕。\"",
-                programmer: "程序员问：\"我们可以用代码动态调整色调吗？\""
+                artist: "美术解释设计理念：\"我用了大量暖色调来营造温馨的氛围。\"",
+                designer: "策划指出问题：\"但这个关卡应该是紧张刺激的战斗场景，暖色调会让玩家放松警惕。\"",
+                programmer: "程序问：\"我们可以用代码动态调整色调吗？\""
             },
             fallback: "视觉色彩设计与游戏情绪引导的不协调。"
         },
@@ -1296,13 +1181,13 @@ const conflictEvents = [
     },
     {
         title: "界面美观度与信息传达效率",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师追求的界面美感与策划师要求的信息显示效率产生冲突。",
+            base: "美术追求的界面美感与策划要求的信息显示效率产生冲突。",
             memberReactions: {
-                artist: "美术师展示设计：\"我做了这个简洁优雅的界面，隐藏了复杂的数据显示。\"",
-                designer: "策划师担心：\"但玩家需要看到详细的数值信息来做战术决策，隐藏起来会影响策略性。\"",
-                programmer: "程序员表示：\"技术上两种方案都能实现。\""
+                artist: "美术展示设计：\"我做了这个简洁优雅的界面，隐藏了复杂的数据显示。\"",
+                designer: "策划担心：\"但玩家需要看到详细的数值信息来做战术决策，隐藏起来会影响策略性。\"",
+                programmer: "程序表示：\"技术上两种方案都能实现。\""
             },
             fallback: "界面美学设计与功能信息展示的优先级冲突。"
         },
@@ -1319,13 +1204,13 @@ const conflictEvents = [
     },
     {
         title: "世界观一致性与视觉创新",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师想要突破传统视觉风格，但策划师担心破坏世界观统一性。",
+            base: "美术想要突破传统视觉风格，但策划担心破坏世界观统一性。",
             memberReactions: {
-                artist: "美术师提出想法：\"我想在后期关卡加入一些超现实主义元素，突破常规设计限制。\"",
-                designer: "策划师质疑：\"这样会不会让玩家感觉突兀？我们花了很多精力建立的世界观会被打破。\"",
-                programmer: "程序员询问：\"这些创新元素的技术实现复杂吗？\""
+                artist: "美术提出想法：\"我想在后期关卡加入一些超现实主义元素，突破常规设计限制。\"",
+                designer: "策划质疑：\"这样会不会让玩家感觉突兀？我们花了很多精力建立的世界观会被打破。\"",
+                programmer: "程序询问：\"这些创新元素的技术实现复杂吗？\""
             },
             fallback: "艺术创新与世界观连贯性之间的平衡问题。"
         },
@@ -1342,13 +1227,13 @@ const conflictEvents = [
     },
     {
         title: "角色个性化与系统平衡性",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师设计的个性化角色与策划师的数值平衡产生冲突。",
+            base: "美术设计的个性化角色与策划的数值平衡产生冲突。",
             memberReactions: {
-                artist: "美术师强调特色：\"每个角色都应该有独特的视觉特征，这样才有辨识度和记忆点。\"",
-                designer: "策划师担心平衡：\"但过于突出某些角色的视觉表现会让玩家产生强弱偏见，影响选择平衡。\"",
-                programmer: "程序员补充：\"我们可以在数据上做补偿调整。\""
+                artist: "美术强调特色：\"每个角色都应该有独特的视觉特征，这样才有辨识度和记忆点。\"",
+                designer: "策划担心平衡：\"但过于突出某些角色的视觉表现会让玩家产生强弱偏见，影响选择平衡。\"",
+                programmer: "程序补充：\"我们可以在数据上做补偿调整。\""
             },
             fallback: "角色视觉个性化与游戏平衡性的矛盾。"
         },
@@ -1365,13 +1250,13 @@ const conflictEvents = [
     },
     {
         title: "叙事表现手法与互动设计冲突",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师的叙事表现方式与策划师的互动设计理念产生分歧。",
+            base: "美术的叙事表现方式与策划的互动设计理念产生分歧。",
             memberReactions: {
-                artist: "美术师倾向：\"我想用更多的环境叙事和视觉暗示来讲故事，让玩家自己体会。\"",
-                designer: "策划师偏好：\"但我们需要清晰的任务指引和互动提示，确保玩家不会迷失方向。\"",
-                programmer: "程序员询问：\"这两种方式在技术实现上有什么区别？\""
+                artist: "美术倾向：\"我想用更多的环境叙事和视觉暗示来讲故事，让玩家自己体会。\"",
+                designer: "策划偏好：\"但我们需要清晰的任务指引和互动提示，确保玩家不会迷失方向。\"",
+                programmer: "程序询问：\"这两种方式在技术实现上有什么区别？\""
             },
             fallback: "含蓄的艺术表达与明确的游戏引导之间的冲突。"
         },
@@ -1388,13 +1273,13 @@ const conflictEvents = [
     },
     {
         title: "美术资源优先级与关卡设计需求",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师的资源制作优先级与策划师的关卡设计时间表不匹配。",
+            base: "美术的资源制作优先级与策划的关卡设计时间表不匹配。",
             memberReactions: {
-                artist: "美术师说明情况：\"我想先完成角色和UI设计，场景建模放到后期。\"",
-                designer: "策划师表示困难：\"但我现在需要场景资源来测试关卡设计，没有环境我没法验证玩法。\"",
-                programmer: "程序员建议：\"我们可以先用简单的几何体代替吗？\""
+                artist: "美术说明情况：\"我想先完成角色和UI设计，场景建模放到后期。\"",
+                designer: "策划表示困难：\"但我现在需要场景资源来测试关卡设计，没有环境我没法验证玩法。\"",
+                programmer: "程序建议：\"我们可以先用简单的几何体代替吗？\""
             },
             fallback: "美术制作顺序与策划测试需求的时间冲突。"
         },
@@ -1411,13 +1296,13 @@ const conflictEvents = [
     },
     {
         title: "风格实验与市场接受度考量",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师希望尝试实验性风格，策划师担心市场接受度。",
+            base: "美术希望尝试实验性风格，策划担心市场接受度。",
             memberReactions: {
-                artist: "美术师充满热情：\"我想尝试这种前卫的艺术风格，绝对能让我们的游戏脱颖而出！\"",
-                designer: "策划师理性分析：\"但我们的目标用户群体可能不接受这么激进的视觉风格...\"",
-                programmer: "程序员表示：\"从技术角度来说，我支持美术师的创新尝试。\""
+                artist: "美术充满热情：\"我想尝试这种前卫的艺术风格，绝对能让我们的游戏脱颖而出！\"",
+                designer: "策划理性分析：\"但我们的目标用户群体可能不接受这么激进的视觉风格...\"",
+                programmer: "程序表示：\"从技术角度来说，我支持美术的创新尝试。\""
             },
             fallback: "艺术实验性与商业可行性之间的选择。"
         },
@@ -1436,15 +1321,15 @@ const conflictEvents = [
     // 团队意见冲突
     {
         title: "游戏难度曲线的设计分歧",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
             base: "在讨论游戏难度设计时，团队出现了理念分歧。",
             memberReactions: {
-                artist: "美术师认真地说：\"我觉得我们的游戏应该更有挑战性，这样才能体现出艺术价值和深度。\"",
-                designer: "策划师担心地反驳：\"但是如果太难的话，很多休闲玩家会直接放弃，我们会失去很大一部分用户。\"",
-                programmer: "程序员在技术角度补充：\"难度调整在代码实现上都不是问题。\""
+                artist: "美术认真地说：\"我觉得我们的游戏应该更有挑战性，这样才能体现出艺术价值和深度。\"",
+                designer: "策划担心地反驳：\"但是如果太难的话，很多休闲玩家会直接放弃，我们会失去很大一部分用户。\"",
+                programmer: "程序在技术角度补充：\"难度调整在代码实现上都不是问题。\""
             },
-            fallback: "美术师希望游戏更具挑战性来展现艺术价值，策划师担心难度过高会流失休闲玩家。"
+            fallback: "美术希望游戏更具挑战性来展现艺术价值，策划担心难度过高会流失休闲玩家。"
         },
         choices: [
             {
@@ -1459,15 +1344,15 @@ const conflictEvents = [
     },
     {
         title: "游戏商业化模式的争论",
-        requiredMembers: ["programmer", "designer"], // 需要程序员和策划师都在团队中
+        requiredMembers: ["programmer", "designer"], // 需要程序和策划都在团队中
         descriptionTemplate: {
             base: "在讨论游戏的商业化模式时，团队产生了分歧。",
             memberReactions: {
-                programmer: "程序员坚持说：\"我觉得我们应该用付费买断制，这样可以专注做好游戏本身，不用考虑那些乱七八糟的内购。\"",
-                designer: "策划师摇头：\"现在手游市场免费+内购才是主流，这样能接触到更多玩家，收入潜力也更大。\"",
-                artist: "美术师表示：\"从设计角度来说，两种模式对我的工作影响不大。\""
+                programmer: "程序坚持说：\"我觉得我们应该用付费买断制，这样可以专注做好游戏本身，不用考虑那些乱七八糟的内购。\"",
+                designer: "策划摇头：\"现在手游市场免费+内购才是主流，这样能接触到更多玩家，收入潜力也更大。\"",
+                artist: "美术表示：\"从设计角度来说，两种模式对我的工作影响不大。\""
             },
-            fallback: "程序员主张采用付费买断制保证游戏品质，策划师认为免费+内购模式能获得更大用户基数。"
+            fallback: "程序主张采用付费买断制保证游戏品质，策划认为免费+内购模式能获得更大用户基数。"
         },
         choices: [
             {
@@ -1482,15 +1367,15 @@ const conflictEvents = [
     },
     {
         title: "开发重点分配的理念冲突",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "在项目中期，策划师和程序员对开发资源的分配重点产生了分歧。",
+            base: "在项目中期，策划和程序对开发资源的分配重点产生了分歧。",
             memberReactions: {
-                designer: "策划师强调：\"我们应该把更多精力放在内容设计上，丰富的玩法才是游戏的灵魂！\"",
-                programmer: "程序员不同意：\"技术底层才是根本，稳定的架构和流畅的体验比花哨的功能更重要。\"",
-                artist: "美术师表示：\"我觉得两个方面都很重要...\""
+                designer: "策划强调：\"我们应该把更多精力放在内容设计上，丰富的玩法才是游戏的灵魂！\"",
+                programmer: "程序不同意：\"技术底层才是根本，稳定的架构和流畅的体验比花哨的功能更重要。\"",
+                artist: "美术表示：\"我觉得两个方面都很重要...\""
             },
-            fallback: "策划师希望重点发展内容和玩法，程序员认为技术基础更关键。"
+            fallback: "策划希望重点发展内容和玩法，程序认为技术基础更关键。"
         },
         choices: [
             {
@@ -1505,15 +1390,15 @@ const conflictEvents = [
     },
     {
         title: "美术风格统一性与创新表达争议",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "在创作后期，美术师想要尝试新的表现手法，但策划师担心破坏整体一致性。",
+            base: "在创作后期，美术想要尝试新的表现手法，但策划担心破坏整体一致性。",
             memberReactions: {
-                artist: "美术师提议：\"我想在最后几个关卡试试新的艺术风格，给玩家带来惊喜！\"",
-                designer: "策划师质疑：\"但这样会不会让整个游戏看起来不协调？我们已经建立的视觉语言会被打乱。\"",
-                programmer: "程序员询问：\"技术实现上会有额外的工作量吗？\""
+                artist: "美术提议：\"我想在最后几个关卡试试新的艺术风格，给玩家带来惊喜！\"",
+                designer: "策划质疑：\"但这样会不会让整个游戏看起来不协调？我们已经建立的视觉语言会被打乱。\"",
+                programmer: "程序询问：\"技术实现上会有额外的工作量吗？\""
             },
-            fallback: "美术师追求创新突破，策划师重视整体协调性。"
+            fallback: "美术追求创新突破，策划重视整体协调性。"
         },
         choices: [
             {
@@ -1528,15 +1413,15 @@ const conflictEvents = [
     },
     {
         title: "技术债务处理的紧迫性争议",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "程序员提出需要花时间重构代码，但美术师希望继续推进视觉内容。",
+            base: "程序提出需要花时间重构代码，但美术希望继续推进视觉内容。",
             memberReactions: {
-                programmer: "程序员严肃地说：\"代码里积累了太多技术债务，如果不及时处理，后面会越来越难维护。\"",
-                artist: "美术师着急：\"但我们的美术进度本来就落后了，现在停下来重构代码会影响整个交付时间！\"",
-                designer: "策划师思考：\"这确实是个两难的选择...\""
+                programmer: "程序严肃地说：\"代码里积累了太多技术债务，如果不及时处理，后面会越来越难维护。\"",
+                artist: "美术着急：\"但我们的美术进度本来就落后了，现在停下来重构代码会影响整个交付时间！\"",
+                designer: "策划思考：\"这确实是个两难的选择...\""
             },
-            fallback: "程序员认为技术债务亟需解决，美术师担心影响创作进度。"
+            fallback: "程序认为技术债务亟需解决，美术担心影响创作进度。"
         },
         choices: [
             {
@@ -1551,15 +1436,15 @@ const conflictEvents = [
     },
     {
         title: "功能完整性与发布时间的矛盾",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "面临发布期限，策划师想要完成所有设计功能，程序员建议削减功能确保质量。",
+            base: "面临发布期限，策划想要完成所有设计功能，程序建议削减功能确保质量。",
             memberReactions: {
-                designer: "策划师坚持：\"这些功能都是核心体验的重要组成部分，删掉任何一个都会让游戏不完整。\"",
-                programmer: "程序员现实地分析：\"以我们现在的进度，要实现所有功能就没时间做充分测试，发布时肯定一堆bug。\"",
-                artist: "美术师表示：\"我的工作基本完成了，主要看你们怎么决定。\""
+                designer: "策划坚持：\"这些功能都是核心体验的重要组成部分，删掉任何一个都会让游戏不完整。\"",
+                programmer: "程序现实地分析：\"以我们现在的进度，要实现所有功能就没时间做充分测试，发布时肯定一堆bug。\"",
+                artist: "美术表示：\"我的工作基本完成了，主要看你们怎么决定。\""
             },
-            fallback: "策划师重视功能完整性，程序员更关注质量保证。"
+            fallback: "策划重视功能完整性，程序更关注质量保证。"
         },
         choices: [
             {
@@ -1574,15 +1459,15 @@ const conflictEvents = [
     },
     {
         title: "代码架构风格的技术理念冲突",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "程序员想要重新设计代码架构，但美术师担心影响现有的创作工具链。",
+            base: "程序想要重新设计代码架构，但美术担心影响现有的创作工具链。",
             memberReactions: {
-                programmer: "程序员解释：\"我想采用更现代的架构模式，这样代码会更优雅，维护性也更好。\"",
-                artist: "美术师担心：\"但重新架构会不会影响我现在使用的工具和流程？我刚刚熟悉了现在的工作方式。\"",
-                designer: "策划师问：\"这个改动对游戏功能有什么影响吗？\""
+                programmer: "程序解释：\"我想采用更现代的架构模式，这样代码会更优雅，维护性也更好。\"",
+                artist: "美术担心：\"但重新架构会不会影响我现在使用的工具和流程？我刚刚熟悉了现在的工作方式。\"",
+                designer: "策划问：\"这个改动对游戏功能有什么影响吗？\""
             },
-            fallback: "程序员追求技术优雅，美术师担心工作流程受影响。"
+            fallback: "程序追求技术优雅，美术担心工作流程受影响。"
         },
         choices: [
             {
@@ -1597,15 +1482,15 @@ const conflictEvents = [
     },
     {
         title: "数据驱动设计与直觉创作的方法论争议",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师更相信数据分析，程序员更倾向于直觉和经验驱动的开发方式。",
+            base: "策划更相信数据分析，程序更倾向于直觉和经验驱动的开发方式。",
             memberReactions: {
-                designer: "策划师强调：\"我们应该建立完整的数据收集系统，用科学的方法来指导设计决策。\"",
-                programmer: "程序员不同意：\"过度依赖数据会让开发变得僵化，有时候程序员的直觉和经验更可靠。\"",
-                artist: "美术师表示：\"我觉得创作有时候确实需要灵感和直觉。\""
+                designer: "策划强调：\"我们应该建立完整的数据收集系统，用科学的方法来指导设计决策。\"",
+                programmer: "程序不同意：\"过度依赖数据会让开发变得僵化，有时候程序的直觉和经验更可靠。\"",
+                artist: "美术表示：\"我觉得创作有时候确实需要灵感和直觉。\""
             },
-            fallback: "策划师推崇数据驱动，程序员相信经验直觉。"
+            fallback: "策划推崇数据驱动，程序相信经验直觉。"
         },
         choices: [
             {
@@ -1620,15 +1505,15 @@ const conflictEvents = [
     },
     {
         title: "艺术表现与商业化包装的价值冲突",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师希望保持纯粹的艺术表达，策划师认为需要考虑商业化包装。",
+            base: "美术希望保持纯粹的艺术表达，策划认为需要考虑商业化包装。",
             memberReactions: {
-                artist: "美术师理想主义地说：\"艺术应该是纯粹的，我们不能为了迎合市场而妥协创作理念。\"",
-                designer: "策划师现实地反驳：\"但我们也要生存啊，如果游戏卖不出去，再好的艺术也没人看到。\"",
-                programmer: "程序员表示：\"我支持在商业成功的基础上追求艺术价值。\""
+                artist: "美术理想主义地说：\"艺术应该是纯粹的，我们不能为了迎合市场而妥协创作理念。\"",
+                designer: "策划现实地反驳：\"但我们也要生存啊，如果游戏卖不出去，再好的艺术也没人看到。\"",
+                programmer: "程序表示：\"我支持在商业成功的基础上追求艺术价值。\""
             },
-            fallback: "美术师追求纯粹艺术，策划师考虑商业现实。"
+            fallback: "美术追求纯粹艺术，策划考虑商业现实。"
         },
         choices: [
             {
@@ -1643,15 +1528,15 @@ const conflictEvents = [
     },
     {
         title: "创新风险与稳妥路线的策略分歧",
-        requiredMembers: ["artist", "programmer"], // 需要美术师和程序员都在团队中
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
         descriptionTemplate: {
-            base: "面对项目后期的选择，美术师希望大胆创新，程序员倾向于稳妥路线。",
+            base: "面对项目后期的选择，美术希望大胆创新，程序倾向于稳妥路线。",
             memberReactions: {
-                artist: "美术师充满激情：\"我们应该大胆尝试前所未有的视觉表现，创造游戏史上的经典！\"",
-                programmer: "程序员冷静分析：\"创新意味着风险，我们应该选择更稳妥的方案，确保项目能够成功交付。\"",
-                designer: "策划师思考：\"创新和稳妥各有道理...\""
+                artist: "美术充满激情：\"我们应该大胆尝试前所未有的视觉表现，创造游戏史上的经典！\"",
+                programmer: "程序冷静分析：\"创新意味着风险，我们应该选择更稳妥的方案，确保项目能够成功交付。\"",
+                designer: "策划思考：\"创新和稳妥各有道理...\""
             },
-            fallback: "美术师偏向冒险创新，程序员倾向稳妥实施。"
+            fallback: "美术偏向冒险创新，程序倾向稳妥实施。"
         },
         choices: [
             {
@@ -1666,15 +1551,15 @@ const conflictEvents = [
     },
     {
         title: "团队工作节奏的管理理念冲突",
-        requiredMembers: ["designer", "programmer"], // 需要策划师和程序员都在团队中
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
         descriptionTemplate: {
-            base: "策划师希望保持快节奏推进，程序员认为需要更谨慎的开发节奏。",
+            base: "策划希望保持快节奏推进，程序认为需要更谨慎的开发节奏。",
             memberReactions: {
-                designer: "策划师催促：\"我们要保持快速迭代，快速试错，这样才能及时调整方向！\"",
-                programmer: "程序员建议：\"欲速则不达，我们应该每一步都扎实推进，避免后续返工。\"",
-                artist: "美术师表示：\"我觉得适中的节奏比较好，太快太慢都不利于创作。\""
+                designer: "策划催促：\"我们要保持快速迭代，快速试错，这样才能及时调整方向！\"",
+                programmer: "程序建议：\"欲速则不达，我们应该每一步都扎实推进，避免后续返工。\"",
+                artist: "美术表示：\"我觉得适中的节奏比较好，太快太慢都不利于创作。\""
             },
-            fallback: "策划师偏好快节奏迭代，程序员倾向稳步推进。"
+            fallback: "策划偏好快节奏迭代，程序倾向稳步推进。"
         },
         choices: [
             {
@@ -1689,15 +1574,15 @@ const conflictEvents = [
     },
     {
         title: "个人成长与项目需求的优先级争议",
-        requiredMembers: ["artist", "designer"], // 需要美术师和策划师都在团队中
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
         descriptionTemplate: {
-            base: "美术师希望通过项目挑战自己的技能边界，策划师更关注项目目标的实现。",
+            base: "美术希望通过项目挑战自己的技能边界，策划更关注项目目标的实现。",
             memberReactions: {
-                artist: "美术师期待：\"我希望通过这个项目学习新的技术和表现手法，提升自己的专业水平。\"",
-                designer: "策划师担心：\"但如果尝试太多新东西，会不会影响项目的进度和质量？我们还是应该以完成项目为主。\"",
-                programmer: "程序员表示：\"学习新技术我是支持的，但确实要考虑时间成本。\""
+                artist: "美术期待：\"我希望通过这个项目学习新的技术和表现手法，提升自己的专业水平。\"",
+                designer: "策划担心：\"但如果尝试太多新东西，会不会影响项目的进度和质量？我们还是应该以完成项目为主。\"",
+                programmer: "程序表示：\"学习新技术我是支持的，但确实要考虑时间成本。\""
             },
-            fallback: "美术师重视个人技能成长，策划师专注项目目标。"
+            fallback: "美术重视个人技能成长，策划专注项目目标。"
         },
         choices: [
             {
@@ -1713,16 +1598,16 @@ const conflictEvents = [
 
     // 个人问题
     {
-        title: "美术师对程序员的技术质疑",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        title: "美术对程序的技术质疑",
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
-            base: "美术师最近对程序员的技术能力产生了质疑，情绪有些激动。",
+            base: "美术最近对程序的技术能力产生了质疑，情绪有些激动。",
             memberReactions: {
-                artist: "美术师忍不住抱怨：\"老板，我真的受不了了！我设计的效果他总说实现不了，是不是他技术水平不够啊？\"",
-                programmer: "程序员听到后脸色很难看：\"我说的都是实话，有些效果确实在当前硬件条件下做不到...\"",
-                designer: "策划师试图缓解气氛：\"大家先冷静一下，我们好好沟通一下技术可行性的问题。\""
+                artist: "美术忍不住抱怨：\"老板，我真的受不了了！我设计的效果他总说实现不了，是不是他技术水平不够啊？\"",
+                programmer: "程序听到后脸色很难看：\"我说的都是实话，有些效果确实在当前硬件条件下做不到...\"",
+                designer: "策划试图缓解气氛：\"大家先冷静一下，我们好好沟通一下技术可行性的问题。\""
             },
-            fallback: "美术师对程序员的技术能力表示质疑，团队气氛变得紧张。"
+            fallback: "美术对程序的技术能力表示质疑，团队气氛变得紧张。"
         },
         choices: [
             {
@@ -1730,26 +1615,26 @@ const conflictEvents = [
                 effects: { progress: -5, money: -10, artist: 5, programmer: 10, designer: 15 }
             },
             {
-                text: "\"美术师，你要相信程序员的专业判断，我们要互相尊重。\"",
+                text: "\"美术，你要相信程序的专业判断，我们要互相尊重。\"",
                 effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 5 }
             }
         ]
     },
     {
-        title: "美术师对策划师审美的不满",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        title: "美术对策划审美的不满",
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
-            base: "美术师对策划师的审美品味产生了强烈不满，情绪开始失控。",
+            base: "美术对策划的审美品味产生了强烈不满，情绪开始失控。",
             memberReactions: {
-                artist: "美术师激动地说：\"老板，我真的很难接受策划师的审美要求！他总是要求我改成那种俗气的风格！\"",
-                designer: "策划师委屈地解释：\"我只是希望能迎合大众玩家的喜好，这样游戏销量会更好...\"",
-                programmer: "程序员在一旁说：\"我觉得你们应该找个平衡点，不要互相否定。\""
+                artist: "美术激动地说：\"老板，我真的很难接受策划的审美要求！他总是要求我改成那种俗气的风格！\"",
+                designer: "策划委屈地解释：\"我只是希望能迎合大众玩家的喜好，这样游戏销量会更好...\"",
+                programmer: "程序在一旁说：\"我觉得你们应该找个平衡点，不要互相否定。\""
             },
-            fallback: "美术师对策划师的审美指导感到不满，认为影响了自己的创作自由。"
+            fallback: "美术对策划的审美指导感到不满，认为影响了自己的创作自由。"
         },
         choices: [
             {
-                text: "\"我支持美术师的创作自由，让我们相信专业的艺术直觉。\"",
+                text: "\"我支持美术的创作自由，让我们相信专业的艺术直觉。\"",
                 effects: { progress: 0, money: -15, artist: 20, programmer: 0, designer: -15 }
             },
             {
@@ -1759,16 +1644,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "美术师的创作理想危机",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        title: "美术的创作理想危机",
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
-            base: "美术师陷入了深深的自我怀疑，对自己的艺术追求感到迷茫。",
+            base: "美术陷入了深深的自我怀疑，对自己的艺术追求感到迷茫。",
             memberReactions: {
-                artist: "美术师沮丧地说：\"老板...我觉得我在这个项目里失去了自己的艺术初心，每天都在做妥协...\"",
-                programmer: "程序员安慰道：\"其实你的设计我们都很欣赏，只是项目确实有很多限制。\"",
-                designer: "策划师也说：\"是啊，我知道你很有才华，只是现在需要考虑更多实际因素。\""
+                artist: "美术沮丧地说：\"老板...我觉得我在这个项目里失去了自己的艺术初心，每天都在做妥协...\"",
+                programmer: "程序安慰道：\"其实你的设计我们都很欣赏，只是项目确实有很多限制。\"",
+                designer: "策划也说：\"是啊，我知道你很有才华，只是现在需要考虑更多实际因素。\""
             },
-            fallback: "美术师对自己的艺术追求产生怀疑，觉得在商业项目中迷失了初心。"
+            fallback: "美术对自己的艺术追求产生怀疑，觉得在商业项目中迷失了初心。"
         },
         choices: [
             {
@@ -1782,16 +1667,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "美术师的情绪崩溃边缘",
-        requiredMembers: ["artist"], // 需要美术师在团队中
+        title: "美术的情绪崩溃边缘",
+        requiredMembers: ["artist"], // 需要美术在团队中
         descriptionTemplate: {
-            base: "长期的工作压力让美术师的情绪到达了崩溃的边缘。",
+            base: "长期的工作压力让美术的情绪到达了崩溃的边缘。",
             memberReactions: {
-                artist: "美术师眼眶湿润：\"我真的撑不下去了...每天改来改去，我觉得自己像个画图机器，没有人理解我的感受...\"",
-                programmer: "程序员担心地说：\"我们都没想到压力给你这么大...\"",
-                designer: "策划师自责地说：\"是不是我对修改要求太多了？我们应该更体谅你的辛苦。\""
+                artist: "美术眼眶湿润：\"我真的撑不下去了...每天改来改去，我觉得自己像个画图机器，没有人理解我的感受...\"",
+                programmer: "程序担心地说：\"我们都没想到压力给你这么大...\"",
+                designer: "策划自责地说：\"是不是我对修改要求太多了？我们应该更体谅你的辛苦。\""
             },
-            fallback: "美术师的情绪已经到达临界点，需要团队的关怀和理解。"
+            fallback: "美术的情绪已经到达临界点，需要团队的关怀和理解。"
         },
         choices: [
             {
@@ -1805,16 +1690,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "程序员的技术焦虑",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        title: "程序的技术焦虑",
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
-            base: "程序员对自己的技术能力产生了怀疑，影响了工作效率。",
+            base: "程序对自己的技术能力产生了怀疑，影响了工作效率。",
             memberReactions: {
-                programmer: "程序员犹豫地说：\"老板...我最近觉得自己的技术水平可能不够，项目需要的一些功能我担心做不好...\"",
-                artist: "美术师安慰道：\"大家都有不自信的时候，你的技术我们都看在眼里。\"",
-                designer: "策划师也说：\"是啊，我们一起想办法，团队就是要互相支持。\""
+                programmer: "程序犹豫地说：\"老板...我最近觉得自己的技术水平可能不够，项目需要的一些功能我担心做不好...\"",
+                artist: "美术安慰道：\"大家都有不自信的时候，你的技术我们都看在眼里。\"",
+                designer: "策划也说：\"是啊，我们一起想办法，团队就是要互相支持。\""
             },
-            fallback: "程序员最近对自己的技术能力产生怀疑，担心无法胜任项目需求。"
+            fallback: "程序最近对自己的技术能力产生怀疑，担心无法胜任项目需求。"
         },
         choices: [
             {
@@ -1828,16 +1713,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "程序员对美术师的不理解愤怒",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        title: "程序对美术的不理解愤怒",
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
-            base: "程序员对美术师不理解技术限制感到愤怒和挫败。",
+            base: "程序对美术不理解技术限制感到愤怒和挫败。",
             memberReactions: {
-                programmer: "程序员终于爆发了：\"老板，美术师总是天马行空，完全不考虑技术实现的难度！我不是万能的！\"",
-                artist: "美术师也生气了：\"那你直接说不能做就行了，为什么要那么复杂地解释一堆技术术语？\"",
-                designer: "策划师试图调解：\"大家冷静一下，我们需要更好的沟通方式。\""
+                programmer: "程序终于爆发了：\"老板，美术总是天马行空，完全不考虑技术实现的难度！我不是万能的！\"",
+                artist: "美术也生气了：\"那你直接说不能做就行了，为什么要那么复杂地解释一堆技术术语？\"",
+                designer: "策划试图调解：\"大家冷静一下，我们需要更好的沟通方式。\""
             },
-            fallback: "程序员对美术师缺乏技术理解感到沮丧，团队沟通出现问题。"
+            fallback: "程序对美术缺乏技术理解感到沮丧，团队沟通出现问题。"
         },
         choices: [
             {
@@ -1845,22 +1730,22 @@ const conflictEvents = [
                 effects: { progress: -5, money: -15, artist: -5, programmer: 20, designer: 10 }
             },
             {
-                text: "\"程序员，你要更耐心地解释技术问题，团队需要互相理解。\"",
+                text: "\"程序，你要更耐心地解释技术问题，团队需要互相理解。\"",
                 effects: { progress: 0, money: 0, artist: 10, programmer: -10, designer: 5 }
             }
         ]
     },
     {
-        title: "程序员对策划师频繁改需求的厌烦",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        title: "程序对策划频繁改需求的厌烦",
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
-            base: "程序员对策划师不断修改需求感到极度厌烦和疲惫。",
+            base: "程序对策划不断修改需求感到极度厌烦和疲惫。",
             memberReactions: {
-                programmer: "程序员疲惫地抱怨：\"策划师又要改需求了！我刚写好的代码又要重构，这是第几次了？\"",
-                designer: "策划师解释道：\"我也不想频繁修改，但测试后发现问题必须要调整啊...\"",
-                artist: "美术师表示理解：\"确实，改来改去大家都很累，能不能一开始就想得更周全一些？\""
+                programmer: "程序疲惫地抱怨：\"策划又要改需求了！我刚写好的代码又要重构，这是第几次了？\"",
+                designer: "策划解释道：\"我也不想频繁修改，但测试后发现问题必须要调整啊...\"",
+                artist: "美术表示理解：\"确实，改来改去大家都很累，能不能一开始就想得更周全一些？\""
             },
-            fallback: "程序员对策划师频繁的需求变更感到精疲力尽，工作积极性下降。"
+            fallback: "程序对策划频繁的需求变更感到精疲力尽，工作积极性下降。"
         },
         choices: [
             {
@@ -1874,16 +1759,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "程序员的技术理想幻灭",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        title: "程序的技术理想幻灭",
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
-            base: "程序员对自己的技术理想产生怀疑，感到迷茫和失落。",
+            base: "程序对自己的技术理想产生怀疑，感到迷茫和失落。",
             memberReactions: {
-                programmer: "程序员迷茫地说：\"我以为做游戏开发能实现很多酷炫的技术，但现实中都是在解决琐碎的bug...\"",
-                artist: "美术师安慰道：\"每个行业都有理想和现实的差距，但你的技术确实在进步。\"",
-                designer: "策划师鼓励：\"等项目完成后，我们可以尝试更有挑战性的技术项目。\""
+                programmer: "程序迷茫地说：\"我以为做游戏开发能实现很多酷炫的技术，但现实中都是在解决琐碎的bug...\"",
+                artist: "美术安慰道：\"每个行业都有理想和现实的差距，但你的技术确实在进步。\"",
+                designer: "策划鼓励：\"等项目完成后，我们可以尝试更有挑战性的技术项目。\""
             },
-            fallback: "程序员的技术理想与项目现实产生冲突，对职业发展感到困惑。"
+            fallback: "程序的技术理想与项目现实产生冲突，对职业发展感到困惑。"
         },
         choices: [
             {
@@ -1897,16 +1782,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "程序员的身心疲惫危机",
-        requiredMembers: ["programmer"], // 需要程序员在团队中
+        title: "程序的身心疲惫危机",
+        requiredMembers: ["programmer"], // 需要程序在团队中
         descriptionTemplate: {
-            base: "长期的加班和技术压力让程序员的身心状态极度糟糕。",
+            base: "长期的加班和技术压力让程序的身心状态极度糟糕。",
             memberReactions: {
-                programmer: "程序员憔悴地说：\"我已经连续好几天没睡好觉了，一闭眼就是代码和bug，我觉得自己快要崩溃了...\"",
-                artist: "美术师关心地说：\"你的脸色确实很差，要不要去看看医生？\"",
-                designer: "策划师担心：\"我们是不是给你的压力太大了？健康比项目更重要。\""
+                programmer: "程序憔悴地说：\"我已经连续好几天没睡好觉了，一闭眼就是代码和bug，我觉得自己快要崩溃了...\"",
+                artist: "美术关心地说：\"你的脸色确实很差，要不要去看看医生？\"",
+                designer: "策划担心：\"我们是不是给你的压力太大了？健康比项目更重要。\""
             },
-            fallback: "程序员的身心状态已经严重透支，急需休息和调整。"
+            fallback: "程序的身心状态已经严重透支，急需休息和调整。"
         },
         choices: [
             {
@@ -1920,16 +1805,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "策划师的创意枯竭",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划的创意枯竭",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "策划师陷入了创意瓶颈，影响了新功能的设计进度。",
+            base: "策划陷入了创意瓶颈，影响了新功能的设计进度。",
             memberReactions: {
-                designer: "策划师沮丧地说：\"老板...我感觉自己最近完全没有灵感，设计出来的东西都很平庸。\"",
-                artist: "美术师安慰道：\"大家都有低潮期的，换个环境可能会有新想法。\"",
-                programmer: "程序员也说：\"是啊，我们一起头脑风暴，说不定能碰撞出火花。\""
+                designer: "策划沮丧地说：\"老板...我感觉自己最近完全没有灵感，设计出来的东西都很平庸。\"",
+                artist: "美术安慰道：\"大家都有低潮期的，换个环境可能会有新想法。\"",
+                programmer: "程序也说：\"是啊，我们一起头脑风暴，说不定能碰撞出火花。\""
             },
-            fallback: "策划师陷入创意瓶颈，最近提出的设计都缺乏新意。"
+            fallback: "策划陷入创意瓶颈，最近提出的设计都缺乏新意。"
         },
         choices: [
             {
@@ -1943,16 +1828,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "策划师对美术师不配合的沮丧",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划对美术不配合的沮丧",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "策划师对美术师不愿意配合设计要求感到深深的沮丧。",
+            base: "策划对美术不愿意配合设计要求感到深深的沮丧。",
             memberReactions: {
-                designer: "策划师委屈地说：\"美术师总是反对我的设计建议，我觉得他根本不尊重我的专业判断...\"",
-                artist: "美术师反驳：\"不是不尊重，是你的有些要求确实违背了基本的美学原则！\"",
-                programmer: "程序员试图调解：\"你们是不是可以多沟通一下各自的考虑？\""
+                designer: "策划委屈地说：\"美术总是反对我的设计建议，我觉得他根本不尊重我的专业判断...\"",
+                artist: "美术反驳：\"不是不尊重，是你的有些要求确实违背了基本的美学原则！\"",
+                programmer: "程序试图调解：\"你们是不是可以多沟通一下各自的考虑？\""
             },
-            fallback: "策划师对美术师的不配合态度感到沮丧，工作协作出现问题。"
+            fallback: "策划对美术的不配合态度感到沮丧，工作协作出现问题。"
         },
         choices: [
             {
@@ -1960,22 +1845,22 @@ const conflictEvents = [
                 effects: { progress: -5, money: -10, artist: 5, programmer: 5, designer: 15 }
             },
             {
-                text: "\"美术师要更多地配合策划的设计意图。\"",
+                text: "\"美术要更多地配合策划的设计意图。\"",
                 effects: { progress: 0, money: 0, artist: -15, programmer: 0, designer: 15 }
             }
         ]
     },
     {
-        title: "策划师对程序员消极态度的担忧",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划对程序消极态度的担忧",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "策划师对程序员最近的消极工作态度感到担忧和不安。",
+            base: "策划对程序最近的消极工作态度感到担忧和不安。",
             memberReactions: {
-                designer: "策划师忧虑地说：\"程序员最近总是说'这个很难'、'那个做不了'，我担心他是不是对项目失去信心了...\"",
-                programmer: "程序员无奈地回应：\"我只是实事求是地评估技术难度，不想给团队虚假的希望。\"",
-                artist: "美术师观察道：\"确实感觉最近大家的工作热情都不如之前了。\""
+                designer: "策划忧虑地说：\"程序最近总是说'这个很难'、'那个做不了'，我担心他是不是对项目失去信心了...\"",
+                programmer: "程序无奈地回应：\"我只是实事求是地评估技术难度，不想给团队虚假的希望。\"",
+                artist: "美术观察道：\"确实感觉最近大家的工作热情都不如之前了。\""
             },
-            fallback: "策划师担心程序员的消极态度会影响团队士气和项目进展。"
+            fallback: "策划担心程序的消极态度会影响团队士气和项目进展。"
         },
         choices: [
             {
@@ -1983,22 +1868,22 @@ const conflictEvents = [
                 effects: { progress: -5, money: -10, artist: 10, programmer: 5, designer: 15 }
             },
             {
-                text: "\"程序员，我们需要你更积极的态度来带动团队。\"",
+                text: "\"程序，我们需要你更积极的态度来带动团队。\"",
                 effects: { progress: 0, money: 0, artist: 0, programmer: -10, designer: 10 }
             }
         ]
     },
     {
-        title: "策划师的设计理念受挫",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划的设计理念受挫",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "策划师的设计理念屡次受到质疑，自信心严重受挫。",
+            base: "策划的设计理念屡次受到质疑，自信心严重受挫。",
             memberReactions: {
-                designer: "策划师自我怀疑地说：\"也许我真的不适合做策划...我的想法总是被否定，是不是我的设计能力真的有问题？\"",
-                artist: "美术师安慰道：\"不是这样的，只是大家的想法有分歧而已。\"",
-                programmer: "程序员也说：\"你的很多设计想法其实都很不错，只是实现起来有困难。\""
+                designer: "策划自我怀疑地说：\"也许我真的不适合做策划...我的想法总是被否定，是不是我的设计能力真的有问题？\"",
+                artist: "美术安慰道：\"不是这样的，只是大家的想法有分歧而已。\"",
+                programmer: "程序也说：\"你的很多设计想法其实都很不错，只是实现起来有困难。\""
             },
-            fallback: "策划师对自己的专业能力产生严重怀疑，信心跌至谷底。"
+            fallback: "策划对自己的专业能力产生严重怀疑，信心跌至谷底。"
         },
         choices: [
             {
@@ -2012,16 +1897,16 @@ const conflictEvents = [
         ]
     },
     {
-        title: "策划师的项目压力焦虑症",
-        requiredMembers: ["designer"], // 需要策划师在团队中
+        title: "策划的项目压力焦虑症",
+        requiredMembers: ["designer"], // 需要策划在团队中
         descriptionTemplate: {
-            base: "巨大的项目压力让策划师出现了严重的焦虑症状。",
+            base: "巨大的项目压力让策划出现了严重的焦虑症状。",
             memberReactions: {
-                designer: "策划师紧张地说：\"我最近总是失眠，一想到项目可能失败就心慌，感觉整个人都要崩溃了...\"",
-                artist: "美术师担心地说：\"你的手一直在发抖，要不要去看看心理医生？\"",
-                programmer: "程序员关心道：\"项目是大家的，不要把所有压力都扛在自己身上。\""
+                designer: "策划紧张地说：\"我最近总是失眠，一想到项目可能失败就心慌，感觉整个人都要崩溃了...\"",
+                artist: "美术担心地说：\"你的手一直在发抖，要不要去看看心理医生？\"",
+                programmer: "程序关心道：\"项目是大家的，不要把所有压力都扛在自己身上。\""
             },
-            fallback: "策划师因为承担过大的项目责任而出现焦虑症状，急需心理支持。"
+            fallback: "策划因为承担过大的项目责任而出现焦虑症状，急需心理支持。"
         },
         choices: [
             {
@@ -2042,9 +1927,9 @@ const conflictEvents = [
         descriptionTemplate: {
             base: "工作室的主要开发设备突然出现故障，严重影响了开发进度。",
             memberReactions: {
-                programmer: "程序员检查后说：\"看起来是硬件问题，可能需要送修或者买新的。\"",
-                artist: "美术师担心：\"我的设计文件都在里面，备份应该是最新的吧？\"",
-                designer: "策划师建议：\"我们是否需要考虑升级所有设备？\""
+                programmer: "程序检查后说：\"看起来是硬件问题，可能需要送修或者买新的。\"",
+                artist: "美术担心：\"我的设计文件都在里面，备份应该是最新的吧？\"",
+                designer: "策划建议：\"我们是否需要考虑升级所有设备？\""
             },
             fallback: "你需要决定如何解决这个技术问题。"
         },
@@ -2056,6 +1941,259 @@ const conflictEvents = [
             {
                 text: "\"先尝试修理，能省则省。\"",
                 effects: { progress: -10, money: -20, artist: -5, programmer: -5, designer: -5 }
+            }
+        ]
+    },
+    {
+        title: "美术抱怨程序做不出理想效果",
+        requiredMembers: ["artist"], // 需要美术在团队中
+        descriptionTemplate: {
+            base: "美术兴冲冲地拿着新设计跑来找程序，结果被告知\"这个效果做不了\"。",
+            memberReactions: {
+                artist: "美术忍不住抱怨：\"我设计的效果他总说实现不了，是不是技术水平不够啊？\"",
+                programmer: "程序脸色难看：\"有些效果确实在当前硬件条件下做不到...\"",
+                designer: "策划试图缓解：\"我们好好沟通一下技术可行性问题。\""
+            },
+            fallback: "美术对程序的技术能力表示质疑，团队气氛变得紧张。"
+        },
+        choices: [
+            {
+                text: "\"我们组织一次技术交流会，让大家互相了解工作难点。\"",
+                effects: { progress: -5, money: -10, artist: 5, programmer: 10, designer: 15 }
+            },
+            {
+                text: "\"美术，你要相信程序的专业判断，我们要互相尊重。\"",
+                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 5 }
+            }
+        ]
+    },
+    {
+        title: "程序抱怨策划频繁改需求",
+        requiredMembers: ["programmer"], // 需要程序在团队中
+        descriptionTemplate: {
+            base: "程序刚写完一个功能，策划又跑过来说\"这里再改改\"，这已经是今天第三次了。",
+            memberReactions: {
+                programmer: "程序疲惫地抱怨：\"又要改需求！刚写好的代码又要重构，这是第几次了？\"",
+                designer: "策划解释：\"测试后发现问题必须要调整啊...\"",
+                artist: "美术感同身受：\"改来改去大家都很累。\""
+            },
+            fallback: "程序对策划频繁的需求变更感到精疲力尽。"
+        },
+        choices: [
+            {
+                text: "\"我们建立更严格的需求确认流程，减少后期变更。\"",
+                effects: { progress: -10, money: -10, artist: 5, programmer: 20, designer: -15 }
+            },
+            {
+                text: "\"灵活调整是必要的，我们要适应开发过程中的变化。\"",
+                effects: { progress: 0, money: 0, artist: 0, programmer: -15, designer: 15 }
+            }
+        ]
+    },
+    {
+        title: "美术坚持原创vs程序建议用素材库",
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
+        descriptionTemplate: {
+            base: "程序指着素材库说\"用这些能节省一个月\"，美术直接炸了：\"用别人的素材？\"",
+            memberReactions: {
+                programmer: "程序建议：\"高质量素材库能节省大量开发时间。\"",
+                artist: "美术反对：\"用别人的素材怎么体现独特风格？玩家会觉得很廉价！\"",
+                designer: "策划补充：\"时间确实紧张，但视觉辨识度也重要。\""
+            },
+            fallback: "开发效率和美术原创性之间需要做出选择。"
+        },
+        choices: [
+            {
+                text: "\"坚持原创美术，这是我们的核心竞争力！\"",
+                effects: { progress: -15, money: -20, artist: 20, programmer: -10, designer: 5 }
+            },
+            {
+                text: "\"合理使用素材库，专注于核心内容的原创设计。\"",
+                effects: { progress: 0, money: 0, artist: -15, programmer: 15, designer: 0 }
+            }
+        ]
+    },
+    {
+        title: "策划要加多人模式vs程序说太复杂",
+        requiredMembers: ["designer", "programmer"], // 需要策划和程序都在团队中
+        descriptionTemplate: {
+            base: "策划看着朋友圈里大家在玩合作游戏，突然兴奋地跑来：\"我们也加个多人模式！\"",
+            memberReactions: {
+                designer: "策划提议：\"加个实时合作模式，让朋友们可以一起玩！\"",
+                programmer: "程序解释困难：\"多人同步需要重新设计整个网络架构，问题太多了。\"",
+                artist: "美术询问：\"多人模式需要重新设计UI吗？\""
+            },
+            fallback: "多人功能的设计需求与网络技术实现的复杂性冲突。"
+        },
+        choices: [
+            {
+                text: "\"开发多人功能，这是未来游戏的趋势！\"",
+                effects: { progress: -30, money: -40, artist: -5, programmer: -15, designer: 25 }
+            },
+            {
+                text: "\"专注单人体验，避免网络技术的复杂性。\"",
+                effects: { progress: 0, money: 0, artist: 10, programmer: 25, designer: -25 }
+            }
+        ]
+    },
+    {
+        title: "美术追求高质量vs程序担心性能",
+        requiredMembers: ["artist", "programmer"], // 需要美术和程序都在团队中
+        descriptionTemplate: {
+            base: "美术做出了4K材质展示效果，程序测试后发现游戏要等2分钟才能启动。",
+            memberReactions: {
+                artist: "美术强调：\"4K材质是保证视觉质量的基础，不能妥协！\"",
+                programmer: "程序无奈：\"启动要等2分钟，很多玩家会直接卸载的。\"",
+                designer: "策划分析：\"首次体验很重要，加载时间确实是问题。\""
+            },
+            fallback: "美术质量和加载性能之间需要找到平衡点。"
+        },
+        choices: [
+            {
+                text: "\"压缩和优化资源，优先保证加载速度。\"",
+                effects: { progress: 0, money: 0, artist: -15, programmer: 20, designer: 10 }
+            },
+            {
+                text: "\"保持美术质量，通过预加载和流式加载来优化体验。\"",
+                effects: { progress: -10, money: -20, artist: 15, programmer: 5, designer: 0 }
+            }
+        ]
+    },
+    {
+        title: "美术想突破风格vs策划担心世界观",
+        requiredMembers: ["artist", "designer"], // 需要美术和策划都在团队中
+        descriptionTemplate: {
+            base: "美术在现代都市游戏里画了一个魔法阵，策划看了直接懵了：\"这是什么？\"",
+            memberReactions: {
+                artist: "美术激动地说：\"超酷的魔法效果，有复杂的符文阵列！\"",
+                designer: "策划泼冷水：\"我们的游戏是现代都市题材，魔法元素完全不符合设定。\"",
+                programmer: "程序表示：\"技术角度来说，两种方案实现难度差不多。\""
+            },
+            fallback: "艺术创意与游戏设定的一致性产生冲突。"
+        },
+        choices: [
+            {
+                text: "\"支持美术的创意，调整游戏世界观来容纳这些元素。\"",
+                effects: { progress: -10, money: -15, artist: 20, programmer: 0, designer: -15 }
+            },
+            {
+                text: "\"坚持原有设定，要求美术设计符合世界观。\"",
+                effects: { progress: 0, money: 0, artist: -15, programmer: 5, designer: 15 }
+            }
+        ]
+    },
+    {
+        title: "竞争对手突然发布同类游戏",
+        requiredMembers: [], // 不需要特定成员，任何情况都可触发
+        descriptionTemplate: {
+            base: "你正在喝咖啡时，美术冲进来大喊：\"大事不好！BigGame公司昨天发布的新游戏和我们的想法一模一样！\"",
+            memberReactions: {
+                artist: "美术匆忙跑进办公室：\"网上都在讨论他们的游戏！\"",
+                programmer: "程序抬起头：\"我看了宣传片，确实和我们的想法很接近。\"",
+                designer: "策划紧张地说：\"会不会觉得我们是在抄袭啊？\""
+            },
+            fallback: "团队成员都开始质疑项目的市场前景。"
+        },
+        choices: [
+            {
+                text: "\"别慌！我们立即调整核心玩法，走差异化路线！\"",
+                effects: { progress: -15, money: -30, artist: 10, programmer: -10, designer: 15 }
+            },
+            {
+                text: "\"我们坚持原计划，专注于把游戏做得更精致！\"",
+                effects: { progress: 0, money: 0, artist: -5, programmer: 5, designer: -10 }
+            }
+        ]
+    },
+    {
+        title: "投资人突然要求提前汇报",
+        requiredMembers: [], // 不需要特定成员
+        descriptionTemplate: {
+            base: "王总的电话打断了午休：\"小李啊，下周就要看到demo。\"挂断后，整个办公室陷入死寂。",
+            memberReactions: {
+                programmer: "程序紧张地说：\"下周？我们现在的版本还有好多bug...\"",
+                artist: "美术担心：\"界面还没完全做好，这样展示会不会太粗糙？\"",
+                designer: "策划补充：\"需要准备完整的演示流程...\""
+            },
+            fallback: "大家都对是否能展示出满意的demo感到担忧。"
+        },
+        choices: [
+            {
+                text: "\"大家加把劲！花钱做个精美演示版本！\"",
+                effects: { progress: 0, money: -40, artist: 10, programmer: 10, designer: 5 }
+            },
+            {
+                text: "\"诚实展示当前进度，重点讲规划和愿景。\"",
+                effects: { progress: 0, money: -10, artist: -5, programmer: -5, designer: 10 }
+            }
+        ]
+    },
+    {
+        title: "音效合作方临时涨价50%",
+        requiredMembers: [], // 不需要特定成员
+        descriptionTemplate: {
+            base: "音乐工作室的电话响起：\"不好意思，项目复杂度超预期，需要涨价50%。\"",
+            memberReactions: {
+                programmer: "程序说：\"距离交付时间已经很紧了...\"",
+                artist: "美术担心：\"换音效师的话，风格可能对不上...\"",
+                designer: "策划补充：\"需要重新评估音效预算了。\""
+            },
+            fallback: "音乐工作室突然要求涨价，时间已经很紧张了。"
+        },
+        choices: [
+            {
+                text: "\"接受涨价，音效质量对游戏很重要！\"",
+                effects: { progress: 0, money: -30, artist: 10, programmer: 0, designer: 5 }
+            },
+            {
+                text: "\"另找方案，使用高质量的免费音效库。\"",
+                effects: { progress: -5, money: 0, artist: -10, programmer: 5, designer: -5 }
+            }
+        ]
+    },
+    {
+        title: "写字楼突然停电三天",
+        requiredMembers: [], // 不需要特定成员
+        descriptionTemplate: {
+            base: "物业紧急通知：\"主变压器故障，整栋楼停电三天抢修。\"程序看着未保存的代码欲哭无泪。",
+            memberReactions: {
+                programmer: "程序崩溃：\"我的代码还没提交到云端！\"",
+                artist: "美术着急：\"设计软件需要高性能电脑，在家根本跑不动...\"",
+                designer: "策划提议：\"去咖啡厅办公？或者找共享办公空间？\""
+            },
+            fallback: "停电三天将严重影响开发进度。"
+        },
+        choices: [
+            {
+                text: "\"租个临时办公室，确保工作不间断！\"",
+                effects: { progress: -5, money: -25, artist: 10, programmer: 5, designer: 5 }
+            },
+            {
+                text: "\"给大家放个假，回来后以更饱满状态投入工作。\"",
+                effects: { progress: -15, money: 0, artist: 15, programmer: 10, designer: 15 }
+            }
+        ]
+    },
+    {
+        title: "空调系统在酷暑中全面瘫痪",
+        requiredMembers: [], // 不需要特定成员
+        descriptionTemplate: {
+            base: "室外40度高温，工作室空调彻底坏掉，维修师傅说零件要从外地调货，至少一周。",
+            memberReactions: {
+                artist: "美术汗流浃背：\"这温度根本没法集中精神，电脑也开始降频了...\"",
+                programmer: "程序擦汗：\"服务器已经开始报警，再这样硬件要出问题。\"",
+                designer: "策划建议：\"暂时搬到有空调的地方办公？\""
+            },
+            fallback: "高温环境严重影响工作效率和设备稳定性。"
+        },
+        choices: [
+            {
+                text: "\"立即买工业风扇和移动空调，先解决燃眉之急！\"",
+                effects: { progress: -5, money: -15, artist: 5, programmer: 10, designer: 5 }
+            },
+            {
+                text: "\"改成夜班制，晚上温度低的时候工作。\"",
+                effects: { progress: -10, money: 0, artist: -10, programmer: -5, designer: -5 }
             }
         ]
     }
@@ -2138,9 +2276,9 @@ async function nextMonth() {
         }
         
         console.log('所有团队成员信心 -5%');
-        console.log('美术师:', gameState.teamConfidence.artist);
-        console.log('程序员:', gameState.teamConfidence.programmer);
-        console.log('策划师:', gameState.teamConfidence.designer);
+        console.log('美术:', gameState.teamConfidence.artist);
+        console.log('程序:', gameState.teamConfidence.programmer);
+        console.log('策划:', gameState.teamConfidence.designer);
         console.log('===================');
     } else {
         // 正常模式：扣除5万运营成本
@@ -2163,7 +2301,8 @@ async function nextMonth() {
     gameState.teamConfidence.designer = Math.max(0, Math.min(100, gameState.teamConfidence.designer));
     
     // 检查团队成员状态
-    if (checkTeamMemberStatus()) {
+    const teamStatus = checkTeamMemberStatus();
+    if (teamStatus.gameEnded) {
         return; // 如果游戏已结束，直接返回
     }
     
@@ -2235,9 +2374,9 @@ function generateEventDescription(descriptionTemplate) {
     
     // 角色名称映射
     const memberNames = {
-        artist: '美术师',
-        programmer: '程序员', 
-        designer: '策划师'
+        artist: '美术',
+        programmer: '程序', 
+        designer: '策划'
     };
     
     // 按优先级顺序添加成员反应
@@ -2331,55 +2470,63 @@ async function makeChoice(choiceIndex) {
     
     // 打印信心变化详情
     console.log('=== 团队信心变化 ===');
-    console.log('美术师:', oldConfidence.artist, '->', gameState.teamConfidence.artist, 
+    console.log('美术:', oldConfidence.artist, '->', gameState.teamConfidence.artist, 
                 `(${gameState.teamMembers.artist ? '在团队中' : '已离开'})`);
-    console.log('程序员:', oldConfidence.programmer, '->', gameState.teamConfidence.programmer,
+    console.log('程序:', oldConfidence.programmer, '->', gameState.teamConfidence.programmer,
                 `(${gameState.teamMembers.programmer ? '在团队中' : '已离开'})`);
-    console.log('策划师:', oldConfidence.designer, '->', gameState.teamConfidence.designer,
+    console.log('策划:', oldConfidence.designer, '->', gameState.teamConfidence.designer,
                 `(${gameState.teamMembers.designer ? '在团队中' : '已离开'})`);
     console.log('当前资金:', gameState.money, '万', gameState.isInDebtMode ? '(负债模式)' : '(正常模式)');
     console.log('=================');
     
     // 检查是否有成员信心降到0并离开团队
-    if (checkTeamMemberStatus()) {
+    const teamStatus = checkTeamMemberStatus();
+    if (teamStatus.gameEnded) {
         return; // 如果游戏已结束，直接返回
     }
     
     // 更新UI（但不更新角色形象）
     updateUIWithoutCharacters();
     
-    // 显示第一轮tips（资金和进度变化）
-    showFirstTips(effects);
+    // 检查是否有成员离队，如果有则延迟显示第一轮tips
+    const tipsDelay = teamStatus.memberLeft ? 2400 : 0; // 如果有成员离队，延迟2.4秒显示tips
     
-    // 1.8秒后同时播放角色入场动画和显示继续按钮
-    setTimeout(async () => {
-        // 同时执行角色入场动画和显示继续按钮
-        if (!checkGameOver()) {
-            await Promise.all([
-                playCharacterEnterAnimationWithoutImageUpdate(),
-                showContinueButton()
-            ]);
-        } else {
-            await playCharacterEnterAnimationWithoutImageUpdate();
-        }
+    setTimeout(() => {
+        // 显示第一轮tips（资金和进度变化）
+        showFirstTips(effects);
         
-        // 然后显示对话气泡
-        await showCharacterBubbles(effects);
-        
-        // 气泡消失后只更新角色形象
-        updateCharacterImages();
-    }, 1800); // 等待第一轮tips结束
+        // 1.8秒后同时播放角色入场动画和显示继续按钮
+        setTimeout(async () => {
+            // 同时执行角色入场动画和显示继续按钮
+            if (!checkGameOver()) {
+                await Promise.all([
+                    playCharacterEnterAnimationWithoutImageUpdate(),
+                    showContinueButton()
+                ]);
+            } else {
+                await playCharacterEnterAnimationWithoutImageUpdate();
+            }
+            
+            // 然后显示对话气泡
+            await showCharacterBubbles(effects);
+            
+            // 气泡消失后只更新角色形象
+            updateCharacterImages();
+        }, 1800); // 等待第一轮tips结束
+    }, tipsDelay);
 }
 
 // 检查团队成员状态，处理信心为0的成员离开团队
 function checkTeamMemberStatus() {
     const memberNames = {
-        artist: '美术师',
-        programmer: '程序员', 
-        designer: '策划师'
+        artist: '美术',
+        programmer: '程序', 
+        designer: '策划'
     };
     
     console.log('=== 检查团队成员状态 ===');
+    
+    let memberLeft = false; // 标记是否有成员离队
     
     // 检查每个成员是否需要离开团队
     for (const [member, confidence] of Object.entries(gameState.teamConfidence)) {
@@ -2390,16 +2537,18 @@ function checkTeamMemberStatus() {
             if (gameState.isInDebtMode) {
                 console.log(`💀 负债模式下${memberNames[member]}信心归零，游戏立即失败！`);
                 endGame(false, '游戏开发失败', `在负债的巨大压力下，${memberNames[member]}的信心彻底崩溃，选择离开团队。项目无法继续进行。负债模式下团队承受的压力果然是双倍的...`);
-                return true; // 返回true表示游戏已结束
+                return { gameEnded: true, memberLeft: false }; // 游戏结束
             } else {
                 // 正常模式下，成员离开团队
                 gameState.teamMembers[member] = false;
                 console.log(`💔 ${memberNames[member]}离开了团队！`);
+                memberLeft = true;
                 
                 // 显示成员离开的提示
                 const tipsElement = document.getElementById('tips');
                 const memberNameWithColor = `<span class="character-name-${member}">${memberNames[member]}</span>`;
-                tipsElement.innerHTML = `${memberNameWithColor}因为信心严重不足选择离开了团队...`;
+                const memberLeftMessage = `${memberNameWithColor}因为信心严重不足选择离开了团队...`;
+                tipsElement.innerHTML = memberLeftMessage;
                 tipsElement.classList.add('show');
                 
                 setTimeout(() => {
@@ -2407,7 +2556,10 @@ function checkTeamMemberStatus() {
                     tipsElement.classList.remove('show');
                     
                     setTimeout(() => {
-                        tipsElement.innerHTML = '';
+                        // 只有当tips内容仍然是成员离队消息时才清空
+                        if (tipsElement.innerHTML === memberLeftMessage) {
+                            tipsElement.innerHTML = '';
+                        }
                         tipsElement.classList.remove('fade-out');
                     }, 300);
                 }, 2000);
@@ -2419,7 +2571,13 @@ function checkTeamMemberStatus() {
     console.log(`剩余团队成员数量: ${remainingMembers.length}`);
     console.log('========================');
     
-    return false; // 返回false表示游戏继续
+    return { gameEnded: false, memberLeft: memberLeft };
+}
+
+// 检查是否有成员离队
+function checkIfMemberLeft() {
+    const remainingMembers = Object.values(gameState.teamMembers).filter(inTeam => inTeam);
+    return remainingMembers.length < Object.values(gameState.teamMembers).length;
 }
 
 // 显示Tips提示
@@ -2475,13 +2633,13 @@ function showSecondTips(effects) {
     // 分析所有角色的信心变化，但只包括还在团队中的角色
     const changes = [];
     if (effects.artist && gameState.teamMembers.artist) {
-        changes.push({ name: '美术师', change: effects.artist });
+        changes.push({ name: '美术', change: effects.artist });
     }
     if (effects.programmer && gameState.teamMembers.programmer) {
-        changes.push({ name: '程序员', change: effects.programmer });
+        changes.push({ name: '程序', change: effects.programmer });
     }
     if (effects.designer && gameState.teamMembers.designer) {
-        changes.push({ name: '策划师', change: effects.designer });
+        changes.push({ name: '策划', change: effects.designer });
     }
     
     if (changes.length > 0) {
@@ -2532,9 +2690,9 @@ function generateConfidenceSummary(changes) {
 function formatNamesWithDescription(names, description) {
     // 角色名称到CSS类的映射
     const nameToClass = {
-        '美术师': 'character-name-artist',
-        '程序员': 'character-name-programmer', 
-        '策划师': 'character-name-designer'
+        '美术': 'character-name-artist',
+        '程序': 'character-name-programmer', 
+        '策划': 'character-name-designer'
     };
     
     if (names.length === 1) {
@@ -2633,8 +2791,8 @@ function endGame(isVictory, title, message) {
 function restartGame() {
     // 重置游戏状态
     gameState = {
-        money: 200,
-        maxMoney: 200,
+        money: 500,
+        maxMoney: 500,
         progress: 0,
         month: 6,
         year: 2025,
@@ -2657,14 +2815,36 @@ function restartGame() {
     // 重置UI
     document.getElementById('game-over').classList.add('hidden');
     document.getElementById('event-section').classList.add('hidden');
+    document.getElementById('debt-modal').classList.add('hidden');
+    document.getElementById('tips').classList.remove('show', 'fade-out');
+    document.getElementById('tips').innerHTML = '';
     
     // 显示介绍页面，隐藏游戏UI
     hideGameUI();
     document.getElementById('intro-screen').classList.remove('hidden');
     
+    // 强制重置所有角色的显示状态
+    Object.keys(characterConfig).forEach(member => {
+        const element = document.getElementById(characterConfig[member].element);
+        const labelElement = document.getElementById(characterConfig[member].labelElement);
+        const wrapper = element.parentElement;
+        
+        // 清除所有可能的动画类和位置类
+        wrapper.classList.remove('hidden', 'position-left', 'position-center', 'position-right', 
+                                  'exit-left', 'exit-right', 'exit-center',
+                                  'enter-left', 'enter-right', 'enter-center');
+        element.classList.remove('hidden');
+        labelElement.classList.remove('hidden');
+    });
+    
     // 预加载角色图片
     updateCharacterDisplay();
     updateUI();
+    
+    // 确保角色显示在介绍页面时也正确重置
+    setTimeout(() => {
+        updateCharacterDisplay();
+    }, 100);
 }
 
 // 初始化游戏
@@ -2685,9 +2865,9 @@ function initGame() {
     // Debug功能说明
     console.log('🎮 独立游戏开发模拟器 Debug 模式');
     console.log('按键说明:');
-    console.log('  Q - 美术师信心 -50');
-    console.log('  W - 程序员信心 -50'); 
-    console.log('  E - 策划师信心 -50');
+    console.log('  Q - 美术信心 -50');
+    console.log('  W - 程序信心 -50'); 
+    console.log('  E - 策划信心 -50');
     console.log('  U - 减少100万资金');
     console.log('  I - 增加20%进度');
     console.log('');
@@ -2711,32 +2891,35 @@ document.addEventListener('keydown', function(event) {
     
     switch(event.key.toLowerCase()) {
         case 'q':
-            // 美术师信心减少50
+            // 美术信心减少50
             if (gameState.teamMembers.artist) {
                 const oldValue = gameState.teamConfidence.artist;
                 gameState.teamConfidence.artist = Math.max(0, gameState.teamConfidence.artist - 50);
-                console.log('DEBUG: 美术师信心', oldValue, '->', gameState.teamConfidence.artist);
-                if (checkTeamMemberStatus()) return; // 如果游戏已结束，直接返回
+                console.log('DEBUG: 美术信心', oldValue, '->', gameState.teamConfidence.artist);
+                const teamStatus = checkTeamMemberStatus();
+                if (teamStatus.gameEnded) return; // 如果游戏已结束，直接返回
                 updateUI();
             }
             break;
         case 'w':
-            // 程序员信心减少50
+            // 程序信心减少50
             if (gameState.teamMembers.programmer) {
                 const oldValue = gameState.teamConfidence.programmer;
                 gameState.teamConfidence.programmer = Math.max(0, gameState.teamConfidence.programmer - 50);
-                console.log('DEBUG: 程序员信心', oldValue, '->', gameState.teamConfidence.programmer);
-                if (checkTeamMemberStatus()) return; // 如果游戏已结束，直接返回
+                console.log('DEBUG: 程序信心', oldValue, '->', gameState.teamConfidence.programmer);
+                const teamStatus = checkTeamMemberStatus();
+                if (teamStatus.gameEnded) return; // 如果游戏已结束，直接返回
                 updateUI();
             }
             break;
         case 'e':
-            // 策划师信心减少50
+            // 策划信心减少50
             if (gameState.teamMembers.designer) {
                 const oldValue = gameState.teamConfidence.designer;
                 gameState.teamConfidence.designer = Math.max(0, gameState.teamConfidence.designer - 50);
-                console.log('DEBUG: 策划师信心', oldValue, '->', gameState.teamConfidence.designer);
-                if (checkTeamMemberStatus()) return; // 如果游戏已结束，直接返回
+                console.log('DEBUG: 策划信心', oldValue, '->', gameState.teamConfidence.designer);
+                const teamStatus = checkTeamMemberStatus();
+                if (teamStatus.gameEnded) return; // 如果游戏已结束，直接返回
                 updateUI();
             }
             break;
