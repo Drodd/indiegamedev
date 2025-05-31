@@ -161,6 +161,90 @@
             max-height: none;
         }
 
+        /* 对话气泡样式 */
+        .speech-bubble {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 1);
+            border: 2px solid #000;
+            border-radius: 15px;
+            padding: 10px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+            z-index: 30;
+            max-width: 120px;
+            word-wrap: break-word;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        /* 对话气泡的小尖角 */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #2c1810;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            top: 97%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(255, 255, 255, 0.95);
+            z-index: 1;
+        }
+
+        /* 显示气泡 */
+        .speech-bubble.show {
+            opacity: 1;
+        }
+
+        /* 根据角色类型设置气泡颜色 */
+        .speech-bubble.bubble-artist {
+            border-color: #000;
+            color: #000;
+        }
+
+        .speech-bubble.bubble-artist::after {
+            border-top-color: #000;
+        }
+
+        .speech-bubble.bubble-programmer {
+            border-color: #000;
+            color: #000;
+        }
+
+        .speech-bubble.bubble-programmer::after {
+            border-top-color: #000;
+        }
+
+        .speech-bubble.bubble-designer {
+            border-color: #000;
+            color: #000;
+        }
+
+        .speech-bubble.bubble-designer::after {
+            border-top-color: #000;
+        }
+
         .character-label {
             position: absolute;
             bottom: 15%;
@@ -837,6 +921,27 @@
             .character-label.label-designer {
                 border-width: 2px;
             }
+            
+            /* 移动端对话气泡优化 */
+            .speech-bubble {
+                top: -10%;
+                font-size: 11px;
+                padding: 8px 12px;
+                max-width: 100px;
+                border-radius: 12px;
+            }
+            
+            .speech-bubble::after {
+                border-left-width: 6px;
+                border-right-width: 6px;
+                border-top-width: 6px;
+            }
+            
+            .speech-bubble::before {
+                border-left-width: 4px;
+                border-right-width: 4px;
+                border-top-width: 4px;
+            }
         }
     </style>
 </head>
@@ -845,6 +950,7 @@
         <!-- 角色显示区域 -->
         <div class="characters-container">
             <div class="character-wrapper position-left">
+                <div class="speech-bubble bubble-designer" id="char-designer-bubble"></div>
                 <img id="char-designer" class="character hidden" src="" alt="策划师">
                 <div id="char-designer-label" class="character-label hidden label-designer">
                     <div class="character-name">策划</div>
@@ -852,6 +958,7 @@
                 </div>
             </div>
             <div class="character-wrapper position-center">
+                <div class="speech-bubble bubble-programmer" id="char-programmer-bubble"></div>
                 <img id="char-programmer" class="character hidden" src="" alt="程序员">
                 <div id="char-programmer-label" class="character-label hidden label-programmer">
                     <div class="character-name">程序</div>
@@ -859,6 +966,7 @@
                 </div>
             </div>
             <div class="character-wrapper position-right">
+                <div class="speech-bubble bubble-artist" id="char-artist-bubble"></div>
                 <img id="char-artist" class="character hidden" src="" alt="美术师">
                 <div id="char-artist-label" class="character-label hidden label-artist">
                     <div class="character-name">美术</div>

@@ -26,6 +26,7 @@ const characterConfig = {
         element: 'char-designer',
         wrapperElement: 'char-designer',
         labelElement: 'char-designer-label',
+        bubbleElement: 'char-designer-bubble',
         imagePath: 'img/img_char1_',
         name: '策划',
         positions: ['left', 'center'] // 可能的显示位置
@@ -34,6 +35,7 @@ const characterConfig = {
         element: 'char-programmer', 
         wrapperElement: 'char-programmer',
         labelElement: 'char-programmer-label',
+        bubbleElement: 'char-programmer-bubble',
         imagePath: 'img/img_char3_',
         name: '程序',
         positions: ['center']
@@ -42,6 +44,7 @@ const characterConfig = {
         element: 'char-artist',
         wrapperElement: 'char-artist',
         labelElement: 'char-artist-label',
+        bubbleElement: 'char-artist-bubble',
         imagePath: 'img/img_char2_',
         name: '美术',
         positions: ['right', 'center']
@@ -61,6 +64,56 @@ function getStatusFromConfidence(confidence) {
     if (confidence >= 40) return { text: '状态良好', class: 'status-medium' };
     if (confidence >= 20) return { text: '有些担心', class: 'status-medium' };
     return { text: '信心不足', class: 'status-low' };
+}
+
+// 根据信心变化获取角色对话内容
+function getConfidenceChangeDialogue(confidenceChange) {
+    if (confidenceChange > 15) {
+        return "太棒了！";
+    } else if (confidenceChange > 5) {
+        return "真不错！";
+    } else if (confidenceChange > 0) {
+        return "还行吧~";
+    } else if (confidenceChange > -5) {
+        return "唉...";
+    } else if (confidenceChange > -15) {
+        return "真不好！";
+    } else {
+        return "好吧...";
+    }
+}
+
+// 显示角色对话气泡
+function showCharacterBubbles(effects) {
+    const bubblePromises = [];
+    
+    // 遍历所有角色，显示有信心变化的角色的对话气泡
+    Object.keys(characterConfig).forEach(member => {
+        const effect = effects[member];
+        if (effect && gameState.teamMembers[member]) {
+            const config = characterConfig[member];
+            const bubbleElement = document.getElementById(config.bubbleElement);
+            const dialogue = getConfidenceChangeDialogue(effect);
+            
+            bubbleElement.textContent = dialogue;
+            bubbleElement.classList.add('show');
+            
+            // 2秒后隐藏气泡
+            const hidePromise = new Promise((resolve) => {
+                setTimeout(() => {
+                    bubbleElement.classList.remove('show');
+                    setTimeout(() => {
+                        bubbleElement.textContent = '';
+                        resolve();
+                    }, 300); // 等待淡出动画完成
+                }, 2000);
+            });
+            
+            bubblePromises.push(hidePromise);
+        }
+    });
+    
+    return Promise.all(bubblePromises);
 }
 
 // 更新角色显示
@@ -131,6 +184,94 @@ function updateSingleCharacter(member, position) {
     labelElement.classList.remove('hidden');
     
     console.log(`${member} 显示在 ${position} 位置，情绪: ${emotion}，状态: ${status.text}`);
+}
+
+// 仅更新角色图像
+function updateCharacterImages() {
+    console.log('=== 更新角色图像 ===');
+    
+    Object.keys(characterConfig).forEach(member => {
+        if (gameState.teamMembers[member]) {
+            const config = characterConfig[member];
+            const element = document.getElementById(config.element);
+            const labelElement = document.getElementById(config.labelElement);
+            const confidence = gameState.teamConfidence[member];
+            const emotion = getEmotionFromConfidence(confidence);
+            const status = getStatusFromConfidence(confidence);
+            
+            // 设置图片路径
+            element.src = config.imagePath + emotion + '.png';
+            
+            // 更新标签内容
+            const statusElement = labelElement.querySelector('.character-status');
+            statusElement.textContent = status.text;
+            statusElement.className = 'character-status ' + status.class;
+            
+            console.log(`${member} 图像更新: ${emotion}，状态: ${status.text}`);
+        }
+    });
+    
+    console.log('角色图像更新完成');
+    console.log('=================');
+}
+
+// 仅更新角色位置和显示状态
+function updateCharacterPositions() {
+    console.log('=== 更新角色位置 ===');
+    
+    // 获取当前在团队中的成员
+    const activeMembers = Object.keys(gameState.teamMembers).filter(member => gameState.teamMembers[member]);
+    console.log('当前团队成员:', activeMembers);
+    
+    // 隐藏所有角色
+    Object.keys(characterConfig).forEach(member => {
+        const element = document.getElementById(characterConfig[member].element);
+        const labelElement = document.getElementById(characterConfig[member].labelElement);
+        const wrapper = element.parentElement;
+        
+        wrapper.classList.add('hidden');
+        wrapper.classList.remove('position-left', 'position-center', 'position-right');
+        element.classList.add('hidden');
+        labelElement.classList.add('hidden');
+    });
+    
+    // 根据团队成员数量确定显示方案（不更新图片和标签内容）
+    if (activeMembers.length === 3) {
+        // 3人：策划左侧，程序中间，美术右侧
+        updateSingleCharacterPosition('designer', 'left');
+        updateSingleCharacterPosition('programmer', 'center');
+        updateSingleCharacterPosition('artist', 'right');
+    } else if (activeMembers.length === 2) {
+        // 2人：中间位置不显示，剩余角色分布在左右
+        const positions = ['left', 'right'];
+        activeMembers.forEach((member, index) => {
+            updateSingleCharacterPosition(member, positions[index]);
+        });
+    } else if (activeMembers.length === 1) {
+        // 1人：显示在中间
+        updateSingleCharacterPosition(activeMembers[0], 'center');
+    }
+    
+    console.log('角色位置更新完成');
+    console.log('===================');
+}
+
+// 更新单个角色位置（不更新图片和标签内容）
+function updateSingleCharacterPosition(member, position) {
+    const config = characterConfig[member];
+    const element = document.getElementById(config.element);
+    const labelElement = document.getElementById(config.labelElement);
+    const wrapper = element.parentElement;
+    
+    // 设置位置
+    wrapper.classList.add('position-' + position);
+    
+    // 显示角色和标签
+    wrapper.classList.remove('hidden');
+    element.classList.remove('hidden');
+    labelElement.classList.remove('hidden');
+    
+    console.log(`${member} 显示在 ${position} 位置`);
 }
 
 // 冲突事件数据库
@@ -1918,48 +2059,41 @@ const conflictEvents = [
         ]
     }
 ];
-// 更新UI显示
+// 更新UI
 function updateUI() {
-    // 格式化资金显示（使用逗号分隔，负债显示为红色）
-    const formattedMoney = (Math.abs(gameState.money) * 10000).toLocaleString();
-    const moneyDisplay = gameState.money < 0 ? '-' + formattedMoney : formattedMoney;
-    
-    const moneyElement = document.getElementById('money');
-    moneyElement.textContent = moneyDisplay;
-    
-    // 负债时显示为红色
-    if (gameState.money < 0) {
-        moneyElement.style.color = '#ff4444';
-    } else {
-        moneyElement.style.color = '#2ecc71';
-    }
-    
+    // 更新状态栏
+    document.getElementById('money').textContent = gameState.money + '万';
     document.getElementById('progress').textContent = gameState.progress;
+    document.getElementById('current-date').textContent = `${gameState.year}年${gameState.month}月`;
     
-    // 在负债模式下显示特殊标识
-    const dateText = gameState.year + '年' + gameState.month + '月';
-    const finalDateText = gameState.isInDebtMode ? dateText + ' (负债模式)' : dateText;
-    document.getElementById('current-date').textContent = finalDateText;
+    // 更新进度条
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = gameState.progress + '%';
     
-    // 更新资金进度条（负债模式下显示不同颜色）
-    if (gameState.money >= 0) {
-        const moneyPercentage = (gameState.money / gameState.maxMoney) * 100;
-        const moneyBar = document.getElementById('money-bar');
-        moneyBar.style.width = moneyPercentage + '%';
-        moneyBar.style.backgroundColor = '#2ecc71'; // 绿色
-    } else {
-        // 负债模式下显示红色进度条，宽度表示负债程度
-        const debtPercentage = Math.min((Math.abs(gameState.money) / gameState.maxMoney) * 100, 100);
-        const moneyBar = document.getElementById('money-bar');
-        moneyBar.style.width = debtPercentage + '%';
-        moneyBar.style.backgroundColor = '#ff4444'; // 红色
-    }
-    
-    // 更新开发进度条
-    document.getElementById('progress-bar').style.width = gameState.progress + '%';
+    // 更新资金条
+    const moneyBar = document.getElementById('money-bar');
+    const moneyPercentage = Math.max(0, Math.min(100, (gameState.money / gameState.maxMoney) * 100));
+    moneyBar.style.width = moneyPercentage + '%';
     
     // 更新角色显示
     updateCharacterDisplay();
+}
+
+// 更新UI但不更新角色形象
+function updateUIWithoutCharacters() {
+    // 更新状态栏
+    document.getElementById('money').textContent = gameState.money + '万';
+    document.getElementById('progress').textContent = gameState.progress;
+    document.getElementById('current-date').textContent = `${gameState.year}年${gameState.month}月`;
+    
+    // 更新进度条
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = gameState.progress + '%';
+    
+    // 更新资金条
+    const moneyBar = document.getElementById('money-bar');
+    const moneyPercentage = Math.max(0, Math.min(100, (gameState.money / gameState.maxMoney) * 100));
+    moneyBar.style.width = moneyPercentage + '%';
 }
 
 // 开始游戏开发
@@ -2210,22 +2344,30 @@ async function makeChoice(choiceIndex) {
         return; // 如果游戏已结束，直接返回
     }
     
-    // 更新UI
-    updateUI();
+    // 更新UI（但不更新角色形象）
+    updateUIWithoutCharacters();
     
-    // 显示tips反馈
-    showTips(effects);
+    // 显示第一轮tips（资金和进度变化）
+    showFirstTips(effects);
     
-    // 等待tips完成后，同时播放角色入场动画和按钮入场动画
+    // 1.8秒后同时播放角色入场动画和显示继续按钮
     setTimeout(async () => {
+        // 同时执行角色入场动画和显示继续按钮
         if (!checkGameOver()) {
-            // 同时执行角色入场和按钮入场动画
             await Promise.all([
-                playCharacterEnterAnimation(),
+                playCharacterEnterAnimationWithoutImageUpdate(),
                 showContinueButton()
             ]);
+        } else {
+            await playCharacterEnterAnimationWithoutImageUpdate();
         }
-    }, 6500); // 调整为6.5秒，等待两轮tips都显示完毕（2.5秒间隔 + 3秒显示 + 0.3秒淡出 + 0.7秒缓冲）
+        
+        // 然后显示对话气泡
+        await showCharacterBubbles(effects);
+        
+        // 气泡消失后只更新角色形象
+        updateCharacterImages();
+    }, 1800); // 等待第一轮tips结束
 }
 
 // 检查团队成员状态，处理信心为0的成员离开团队
@@ -2640,6 +2782,44 @@ function playCharacterEnterAnimation() {
     return new Promise((resolve) => {
         // 更新角色显示（包括图片切换）
         updateCharacterDisplay();
+        
+        const activeMembers = Object.keys(gameState.teamMembers).filter(member => gameState.teamMembers[member]);
+        
+        // 清除之前的动画类并添加入场动画
+        activeMembers.forEach(member => {
+            const config = characterConfig[member];
+            const wrapper = document.getElementById(config.element).parentElement;
+            
+            // 清除出场动画类
+            wrapper.classList.remove('exit-left', 'exit-right', 'exit-center');
+            
+            // 根据位置添加相应的入场动画
+            if (wrapper.classList.contains('position-left')) {
+                wrapper.classList.add('enter-left');
+            } else if (wrapper.classList.contains('position-right')) {
+                wrapper.classList.add('enter-right');
+            } else if (wrapper.classList.contains('position-center')) {
+                wrapper.classList.add('enter-center');
+            }
+        });
+        
+        // 0.5秒后完成入场动画
+        setTimeout(() => {
+            // 清除入场动画类
+            activeMembers.forEach(member => {
+                const config = characterConfig[member];
+                const wrapper = document.getElementById(config.element).parentElement;
+                wrapper.classList.remove('enter-left', 'enter-right', 'enter-center');
+            });
+            resolve();
+        }, 500);
+    });
+}
+
+function playCharacterEnterAnimationWithoutImageUpdate() {
+    return new Promise((resolve) => {
+        // 更新角色位置显示（但不更新图片）
+        updateCharacterPositions();
         
         const activeMembers = Object.keys(gameState.teamMembers).filter(member => gameState.teamMembers[member]);
         
