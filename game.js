@@ -1,7 +1,7 @@
 // 游戏状态
 let gameState = {
-    money: 200, // 资金（万元）
-    maxMoney: 200, // 历史最大资金
+    money: 500, // 资金（万元）
+    maxMoney: 500, // 历史最大资金
     progress: 0, // 开发进度（%）
     month: 6, // 当前月份
     year: 2025, // 当前年份
@@ -17,7 +17,8 @@ let gameState = {
     },
     isInDebtMode: false, // 是否在负债模式
     isGameOver: false,
-    currentEvent: null
+    currentEvent: null,
+    isIntroShown: true // 是否显示介绍页面
 };
 
 // 角色管理配置
@@ -75,11 +76,11 @@ function getConfidenceChangeDialogue(confidenceChange) {
     } else if (confidenceChange > 0) {
         return "还行吧~";
     } else if (confidenceChange > -5) {
-        return "唉...";
+        return "...";
     } else if (confidenceChange > -15) {
-        return "真不好！";
+        return "...";
     } else {
-        return "好吧...";
+        return "...";
     }
 }
 
@@ -2580,20 +2581,8 @@ function checkGameOver() {
             gameState.isInDebtMode = true;
             console.log('💰 资金耗尽！进入负债模式，团队将承担更大压力...');
             
-            // 显示进入负债模式的提示
-            const tipsElement = document.getElementById('tips');
-            tipsElement.textContent = '资金耗尽！团队进入负债模式，每月将消耗团队信心...';
-            tipsElement.classList.add('show');
-            
-            setTimeout(() => {
-                tipsElement.classList.add('fade-out');
-                tipsElement.classList.remove('show');
-                
-                setTimeout(() => {
-                    tipsElement.textContent = '';
-                    tipsElement.classList.remove('fade-out');
-                }, 300);
-            }, 3000);
+            // 显示负债模式弹窗
+            showDebtModal();
             
             return false; // 不结束游戏，继续进行
         } else {
@@ -2621,11 +2610,20 @@ function endGame(isVictory, title, message) {
     document.getElementById('event-section').classList.add('hidden');
     
     const gameOverElement = document.getElementById('game-over');
+    const imageElement = document.getElementById('game-over-image');
     const titleElement = document.getElementById('game-over-title');
     const messageElement = document.getElementById('game-over-message');
     
+    // 根据胜利或失败状态设置对应图片
+    if (isVictory) {
+        imageElement.src = 'img/img_result_win.png';
+        titleElement.className = 'game-over-title victory';
+    } else {
+        imageElement.src = 'img/img_result_lose.png';
+        titleElement.className = 'game-over-title defeat';
+    }
+    
     titleElement.textContent = title;
-    titleElement.className = isVictory ? 'victory' : 'defeat';
     messageElement.textContent = message;
     
     gameOverElement.classList.remove('hidden');
@@ -2635,8 +2633,8 @@ function endGame(isVictory, title, message) {
 function restartGame() {
     // 重置游戏状态
     gameState = {
-        money: 500,
-        maxMoney: 500,
+        money: 200,
+        maxMoney: 200,
         progress: 0,
         month: 6,
         year: 2025,
@@ -2652,20 +2650,36 @@ function restartGame() {
         },
         isInDebtMode: false,
         isGameOver: false,
-        currentEvent: null
+        currentEvent: null,
+        isIntroShown: true // 重新开始时回到介绍页面
     };
     
     // 重置UI
     document.getElementById('game-over').classList.add('hidden');
     document.getElementById('event-section').classList.add('hidden');
-    document.getElementById('game-content').classList.remove('hidden');
-    document.getElementById('start-btn').style.display = 'block';
     
+    // 显示介绍页面，隐藏游戏UI
+    hideGameUI();
+    document.getElementById('intro-screen').classList.remove('hidden');
+    
+    // 预加载角色图片
+    updateCharacterDisplay();
     updateUI();
 }
 
 // 初始化游戏
 function initGame() {
+    // 初始化时显示介绍页面，隐藏游戏UI
+    if (gameState.isIntroShown) {
+        hideGameUI();
+        document.getElementById('intro-screen').classList.remove('hidden');
+    } else {
+        showGameUI();
+        document.getElementById('intro-screen').classList.add('hidden');
+    }
+    
+    // 预加载角色图片和更新UI
+    updateCharacterDisplay();
     updateUI();
     
     // Debug功能说明
@@ -2856,15 +2870,27 @@ function playCharacterEnterAnimationWithoutImageUpdate() {
 
 function playEventPanelEnterAnimation() {
     return new Promise((resolve) => {
-        const eventPanel = document.getElementById('event-section');
-        eventPanel.classList.remove('hidden');
-        eventPanel.classList.add('enter-scale');
+        // 先触发屏幕震动效果
+        const gameContainer = document.querySelector('.game-container');
+        gameContainer.classList.add('shake');
         
-        // 0.5秒后完成入场动画
+        // 震动完成后移除震动类
         setTimeout(() => {
-            eventPanel.classList.remove('enter-scale');
-            resolve();
-        }, 500);
+            gameContainer.classList.remove('shake');
+        }, 300);
+        
+        // 震动0.2秒后开始弹窗动画
+        setTimeout(() => {
+            const eventPanel = document.getElementById('event-section');
+            eventPanel.classList.remove('hidden');
+            eventPanel.classList.add('enter-scale');
+            
+            // 0.8秒后完成入场动画
+            setTimeout(() => {
+                eventPanel.classList.remove('enter-scale');
+                resolve();
+            }, 800);
+        }, 200);
     });
 }
 
@@ -2894,4 +2920,43 @@ function playButtonEnterAnimation() {
             resolve();
         }, 500);
     });
+}
+
+// 开始游戏（从介绍页面进入游戏）
+function startGame() {
+    // 隐藏介绍页面
+    document.getElementById('intro-screen').classList.add('hidden');
+    
+    // 显示游戏UI
+    gameState.isIntroShown = false;
+    showGameUI();
+    
+    // 更新角色显示
+    updateCharacterDisplay();
+    
+    console.log('🎮 游戏开始！');
+}
+
+// 显示游戏UI
+function showGameUI() {
+    document.getElementById('game-content').classList.remove('hidden');
+    document.querySelector('.status-bar').classList.remove('hidden');
+    document.querySelector('.characters-container').classList.remove('intro-hidden');
+}
+
+// 隐藏游戏UI
+function hideGameUI() {
+    document.getElementById('game-content').classList.add('hidden');
+    document.querySelector('.status-bar').classList.add('hidden');
+    document.querySelector('.characters-container').classList.add('intro-hidden');
+}
+
+// 显示负债模式弹窗
+function showDebtModal() {
+    document.getElementById('debt-modal').classList.remove('hidden');
+}
+
+// 关闭负债模式弹窗
+function closeDebtModal() {
+    document.getElementById('debt-modal').classList.add('hidden');
 } 

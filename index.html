@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>独立游戏开发模拟器</title>
+    <title>独游发展国</title>
     <style>
         * {
             margin: 0;
@@ -29,6 +29,98 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+        }
+        
+        /* 屏幕震动效果 */
+        .game-container.shake {
+            animation: screenShake 0.3s ease-in-out;
+        }
+        
+        /* 游戏介绍页面 */
+        .intro-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .intro-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .intro-content {
+            position: relative;
+            z-index: 1001;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #000;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.4);
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        
+        .intro-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c1810;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+        
+        .intro-subtitle {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4a4a4a;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .intro-start-btn {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: #2c1810;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        
+        .intro-start-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(0,0,0,0.3);
+        }
+        
+        .intro-start-btn:active {
+            transform: translate(0px, 0px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+        
+        .intro-screen.hidden {
+            display: none;
+        }
+        
+        /* 介绍页面时隐藏角色标签 */
+        .characters-container.intro-hidden .character-label {
+            display: none;
         }
         
         /* 状态栏 */
@@ -380,7 +472,7 @@
         
         /* 事件面板入场动画 */
         .event-panel.enter-scale {
-            animation: enterScale 0.5s ease-out forwards;
+            animation: enterScale 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
         }
         
         /* 事件面板出场动画 */
@@ -478,13 +570,28 @@
         }
         
         @keyframes enterScale {
-            from {
+            0% {
                 opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
+                transform: translate(-50%, -50%) scale(0.3) rotate(-5deg);
+                filter: blur(2px);
             }
-            to {
+            25% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.15) rotate(2deg);
+                filter: blur(1px);
+            }
+            50% {
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(0.95) rotate(-1deg);
+                filter: blur(0px);
+            }
+            75% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
             }
         }
         
@@ -497,6 +604,19 @@
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0.8);
             }
+        }
+        
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2px, -1px); }
+            20% { transform: translate(2px, 1px); }
+            30% { transform: translate(-1px, 2px); }
+            40% { transform: translate(1px, -2px); }
+            50% { transform: translate(-2px, 1px); }
+            60% { transform: translate(2px, -1px); }
+            70% { transform: translate(-1px, -2px); }
+            80% { transform: translate(1px, 2px); }
+            90% { transform: translate(-2px, -1px); }
         }
         
         /* 预加载图片容器 */
@@ -745,21 +865,52 @@
             font-weight: bold;
         }
         
-        /* 游戏结束画面 */
-        .game-over-panel {
+        /* 游戏结束面板 */
+        .game-over-screen {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.98);
-            border: 4px solid #000;
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-over-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .game-over-content {
+            position: relative;
+            z-index: 1001;
             text-align: center;
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.4);
-            z-index: 300;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #000;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.4);
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        
+        .game-over-image {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
         
         .game-over-title {
@@ -805,6 +956,157 @@
         .restart-btn:active {
             transform: translate(0px, 0px);
             box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+        }
+        
+        .game-over-screen.hidden {
+            display: none;
+        }
+        
+        /* 负债模式弹窗 */
+        .debt-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .debt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .debt-content {
+            position: relative;
+            z-index: 1501;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #000;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.4);
+            max-width: 600px;
+            margin: 0 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .debt-image {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .debt-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .debt-story {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+        
+        .member-speech {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .member-speech.speech-programmer {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .member-speech.speech-artist {
+            border-left-color: #f97316;
+            background: rgba(251, 146, 60, 0.1);
+        }
+        
+        .member-speech.speech-designer {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .member-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .speech-programmer .member-name {
+            color: #2563eb;
+        }
+        
+        .speech-artist .member-name {
+            color: #ea580c;
+        }
+        
+        .speech-designer .member-name {
+            color: #059669;
+        }
+        
+        .debt-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #991b1b;
+            font-weight: bold;
+        }
+        
+        .debt-continue-btn {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+            border: 3px solid #000;
+            border-radius: 12px;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        
+        .debt-continue-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(0,0,0,0.3);
+        }
+        
+        .debt-continue-btn:active {
+            transform: translate(0px, 0px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+        
+        .debt-modal.hidden {
+            display: none;
         }
         
         .hidden {
@@ -942,11 +1244,109 @@
                 border-right-width: 4px;
                 border-top-width: 4px;
             }
+            
+            /* 移动端游戏结束画面优化 */
+            .game-over-content {
+                padding: 30px 20px;
+                max-width: 90%;
+                margin: 0 10px;
+            }
+            
+            .game-over-image {
+                max-width: 200px;
+                margin-bottom: 15px;
+            }
+            
+            .game-over-title {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            .game-over-message {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .restart-btn {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+            
+            /* 移动端游戏介绍页面优化 */
+            .intro-content {
+                padding: 30px 20px;
+                max-width: 90%;
+                margin: 0 10px;
+            }
+            
+            .intro-title {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+            
+            .intro-subtitle {
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+            
+            .intro-start-btn {
+                font-size: 16px;
+                padding: 12px 30px;
+            }
+            
+            /* 移动端负债模式弹窗优化 */
+            .debt-content {
+                padding: 25px 20px;
+                max-width: 95%;
+                margin: 0 10px;
+            }
+            
+            .debt-image {
+                max-width: 150px;
+                margin-bottom: 15px;
+            }
+            
+            .debt-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .member-speech {
+                margin: 12px 0;
+                padding: 12px;
+                font-size: 13px;
+            }
+            
+            .member-name {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+            
+            .debt-warning {
+                padding: 12px;
+                font-size: 12px;
+                margin-top: 15px;
+            }
+            
+            .debt-continue-btn {
+                font-size: 14px;
+                padding: 12px 30px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <!-- 游戏介绍页面 -->
+        <div id="intro-screen" class="intro-screen">
+            <div class="intro-overlay"></div>
+            <div class="intro-content">
+                <h1 class="intro-title">独游发展国</h1>
+                <p class="intro-subtitle">500万元的天使投资从天而降，你和小伙伴们正式拥有了自己的工作室，大家满怀信心的踏上了取经之路...</p>
+                <button class="intro-start-btn" onclick="startGame()">开始游戏</button>
+            </div>
+        </div>
+
         <!-- 角色显示区域 -->
         <div class="characters-container">
             <div class="character-wrapper position-left">
@@ -986,6 +1386,10 @@
             <img src="img/img_char3_happy.png" alt="preload">
             <img src="img/img_char3_doubt.png" alt="preload">
             <img src="img/img_char3_sad.png" alt="preload">
+            <!-- 预加载结果图片 -->
+            <img src="img/img_result_win.png" alt="preload">
+            <img src="img/img_result_lose.png" alt="preload">
+            <img src="img/img_result_continue.png" alt="preload">
         </div>
 
         <!-- 状态栏 -->
@@ -1025,10 +1429,39 @@
         </div>
         
         <!-- 游戏结束面板 -->
-        <div id="game-over" class="game-over-panel hidden">
-            <h2 class="game-over-title" id="game-over-title"></h2>
-            <p class="game-over-message" id="game-over-message"></p>
-            <button class="restart-btn" onclick="restartGame()">重新开始</button>
+        <div id="game-over" class="game-over-screen hidden">
+            <div class="game-over-overlay"></div>
+            <div class="game-over-content">
+                <img id="game-over-image" class="game-over-image" src="" alt="游戏结果">
+                <h2 class="game-over-title" id="game-over-title"></h2>
+                <p class="game-over-message" id="game-over-message"></p>
+                <button class="restart-btn" onclick="restartGame()">重新开始</button>
+            </div>
+        </div>
+        
+        <!-- 负债模式弹窗 -->
+        <div id="debt-modal" class="debt-modal hidden">
+            <div class="debt-overlay"></div>
+            <div class="debt-content">
+                <img class="debt-image" src="img/img_result_continue.png" alt="坚持继续">
+                <h2 class="debt-title">资金耗尽，但是小伙伴们没有放弃！</h2>
+                <div class="debt-story">
+                    <div class="member-speech speech-programmer">
+                        <div class="member-name">程序员</div>
+                        <div>"我可以先不要工资，继续和大家一起努力！"</div>
+                    </div>
+                    <div class="member-speech speech-artist">
+                        <div class="member-name">美术师</div>
+                        <div>"我们已经走了这么远，现在放弃太可惜了。"</div>
+                    </div>
+                    <div class="member-speech speech-designer">
+                        <div class="member-name">策划师</div>
+                        <div>"这个游戏就是我的孩子，我一定要看到它成功上线！"</div>
+                    </div>
+                    <p class="debt-warning">⚠️ 警告：负债模式下，团队每月都会承受额外的心理压力，每个人的信心都会下降。如果任何人的信心归零，游戏将立即结束！</p>
+                </div>
+                <button class="debt-continue-btn" onclick="closeDebtModal()">坚持到底</button>
+            </div>
         </div>
         
         <!-- Tips 浮动提示 -->
