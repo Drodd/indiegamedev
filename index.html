@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独立游戏开发模拟器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #2c1810;
+            min-height: 100vh;
+            overflow-x: hidden;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-image: url('img/img_bg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        /* 状态栏 */
+        .status-bar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #000;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+        }
+        
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .status-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c1810;
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+        
+        .progress-container {
+            position: relative;
+            width: 100%;
+            flex: 1;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 12px;
+            height: 24px;
+            overflow: hidden;
+            border: 2px solid #2c1810;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .money-fill {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+        }
+        
+        .progress-fill-dev {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c1810;
+            text-shadow: 0 0 2px rgba(255,255,255,0.8);
+        }
+        
+        .date-display {
+            background: rgba(44, 24, 16, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 2px 2px 0px #000;
+        }
+        
+        /* 主要游戏区域 */
+        .game-content {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 50;
+        }
+        
+        /* 角色显示区域 */
+        .characters-container {
+            position: absolute;
+            bottom: 12%;
+            left: 0;
+            right: 0;
+            height: 70vh;
+            overflow: visible;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .character-wrapper {
+            position: absolute;
+            bottom: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            transition: all 0.5s ease;
+        }
+
+        .character {
+            height: 120%;
+            width: auto;
+            transition: all 0.5s ease;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            object-fit: contain;
+            object-position: bottom center;
+            max-height: none;
+        }
+
+        .character-label {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #2c1810;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+            transition: all 0.5s ease;
+            min-width: 80px;
+            z-index: 20;
+        }
+
+        .character-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c1810;
+            margin-bottom: 2px;
+        }
+
+        /* 角色标签颜色区分 */
+        .character-label.label-artist .character-name {
+            color: #ea580c;
+        }
+        
+        .character-label.label-programmer .character-name {
+            color: #2563eb;
+        }
+        
+        .character-label.label-designer .character-name {
+            color: #059669;
+        }
+        
+        .character-label.label-artist {
+            border-color: #000;
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .character-label.label-programmer {
+            border-color: #000;;
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .character-label.label-designer {
+            border-color: #000;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .character-status {
+            font-size: 10px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* 信心状态颜色 */
+        .status-high { color: #000000; }
+        .status-medium { color: #ca8a04; }
+        .status-low { color: #dc2626; }
+
+        /* 角色位置和层级 */
+        .character-wrapper.position-left {
+            left: 15%;
+            z-index: 11;
+            transform: translateX(-50%);
+        }
+
+        .character-wrapper.position-center {
+            left: 50%;
+            z-index: 13;
+            transform: translateX(-50%);
+        }
+
+        .character-wrapper.position-right {
+            left: 85%;
+            z-index: 12;
+            transform: translateX(-50%);
+        }
+
+        /* 右侧角色水平翻转 */
+        .character-wrapper.position-right .character {
+            transform: scaleX(-1);
+        }
+
+        /* 隐藏状态 */
+        .character-wrapper.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(50px);
+        }
+
+        .character.hidden, .character-label.hidden {
+            opacity: 0;
+        }
+        
+        /* 角色出场动画 */
+        .character-wrapper.exit-left {
+            animation: exitLeft 0.5s ease-in-out forwards;
+        }
+        
+        .character-wrapper.exit-right {
+            animation: exitRight 0.5s ease-in-out forwards;
+        }
+        
+        .character-wrapper.exit-center {
+            animation: exitCenter 0.5s ease-in-out forwards;
+        }
+        
+        /* 角色入场动画 */
+        .character-wrapper.enter-left {
+            animation: enterLeft 0.5s ease-in-out forwards;
+        }
+        
+        .character-wrapper.enter-right {
+            animation: enterRight 0.5s ease-in-out forwards;
+        }
+        
+        .character-wrapper.enter-center {
+            animation: enterCenter 0.5s ease-in-out forwards;
+        }
+        
+        /* 按钮出场动画 */
+        .game-content.exit-down {
+            animation: exitDown 0.5s ease-in-out forwards;
+        }
+        
+        /* 按钮入场动画 */
+        .game-content.enter-up {
+            animation: enterUp 0.5s ease-in-out forwards;
+        }
+        
+        /* 事件面板入场动画 */
+        .event-panel.enter-scale {
+            animation: enterScale 0.5s ease-out forwards;
+        }
+        
+        /* 事件面板出场动画 */
+        .event-panel.exit-scale {
+            animation: exitScale 0.5s ease-in forwards;
+        }
+        
+        /* 动画关键帧 */
+        @keyframes exitLeft {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-150%) translateY(0);
+            }
+        }
+        
+        @keyframes exitRight {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50%) translateY(0);
+            }
+        }
+        
+        @keyframes exitCenter {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes enterLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-150%) translateY(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes enterRight {
+            from {
+                opacity: 0;
+                transform: translateX(50%) translateY(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes enterCenter {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes exitDown {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(100px);
+            }
+        }
+        
+        @keyframes enterUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        @keyframes enterScale {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes exitScale {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+        
+        /* 预加载图片容器 */
+        .preload-images {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            z-index: -1;
+        }
+        
+        .start-button {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: #2c1810;
+            border: 3px solid #000;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+            transition: transform 0.1s ease;
+        }
+        
+        .start-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(0,0,0,0.3);
+        }
+        
+        .start-button:active {
+            transform: translate(0px, 0px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+        
+        /* 事件面板 */
+        .event-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            border: 4px solid #000;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.4);
+            z-index: 200;
+        }
+        
+        .event-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c1810;
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        
+        .event-description {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+            text-align: justify;
+        }
+        
+        /* 角色发言样式 */
+        .character-speech {
+            margin: 12px 0;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .speech-artist {
+            border-left-color: #f97316;
+            background: rgba(251, 146, 60, 0.1);
+        }
+        
+        .speech-programmer {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .speech-designer {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .character-name-tag {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .speech-artist .character-name-tag {
+            color: #ea580c;
+        }
+        
+        .speech-programmer .character-name-tag {
+            color: #2563eb;
+        }
+        
+        .speech-designer .character-name-tag {
+            color: #059669;
+        }
+        
+        .base-description {
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #2c1810;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            color: #2c1810;
+            font-weight: bold;
+            transition: all 0.1s ease;
+            box-shadow: 3px 3px 0px rgba(44, 24, 16, 0.3);
+        }
+        
+        .choice-btn:hover {
+            background: #f0f8ff;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px rgba(44, 24, 16, 0.4);
+        }
+        
+        .choice-btn:active {
+            transform: translate(0px, 0px);
+            box-shadow: 2px 2px 0px rgba(44, 24, 16, 0.3);
+        }
+        
+        .choice-btn:disabled {
+            background: #e5e5e5;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 2px 2px 0px rgba(44, 24, 16, 0.2);
+        }
+        
+        .continue-btn {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: #2c1810;
+            border: 3px solid #000;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        
+        .continue-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+        }
+        
+        .continue-btn:active {
+            transform: translate(0px, 0px);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+        }
+        
+        .feedback {
+            background: rgba(230, 247, 255, 0.95);
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: #0066cc;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Tips 浮动提示 */
+        .tips {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(44, 24, 16, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            z-index: 500;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 90%;
+            min-width: 300px;
+            word-wrap: break-word;
+        }
+        
+        .tips.show {
+            opacity: 1;
+        }
+        
+        .tips.fade-out {
+            opacity: 0;
+        }
+        
+        /* Tips中的角色名称颜色 */
+        .tips .character-name-artist {
+            color: #ea580c;
+            font-weight: bold;
+        }
+        
+        .tips .character-name-programmer {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        
+        .tips .character-name-designer {
+            color: #059669;
+            font-weight: bold;
+        }
+        
+        /* 游戏结束画面 */
+        .game-over-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            border: 4px solid #000;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.4);
+            z-index: 300;
+        }
+        
+        .game-over-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .victory {
+            color: #16a34a;
+        }
+        
+        .defeat {
+            color: #dc2626;
+        }
+        
+        .game-over-message {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            color: #4a4a4a;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(45deg, #3b82f6, #1e40af);
+            color: white;
+            border: 3px solid #000;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        
+        .restart-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+        }
+        
+        .restart-btn:active {
+            transform: translate(0px, 0px);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .status-bar {
+                top: 10px;
+                width: 95%;
+                padding: 12px;
+                gap: 6px;
+            }
+            
+            .status-row {
+                gap: 10px;
+            }
+            
+            .status-label {
+                font-size: 14px;
+                min-width: 70px;
+            }
+            
+            .progress-bar {
+                height: 20px;
+                border-radius: 10px;
+            }
+            
+            .progress-text {
+                font-size: 12px;
+            }
+            
+            .date-display {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            
+            .tips {
+                min-width: 250px;
+                max-width: 95%;
+                font-size: 12px;
+                padding: 12px 20px;
+            }
+            
+            .event-panel {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .event-title {
+                font-size: 16px;
+            }
+            
+            .event-description {
+                font-size: 13px;
+            }
+            
+            .choice-btn {
+                font-size: 12px;
+                padding: 12px;
+            }
+            
+            .characters-container {
+                height: 40vh;
+            }
+            
+            .character-wrapper.position-left {
+                left: 20%;
+            }
+            
+            .character-wrapper.position-center {
+                left: 50%;
+            }
+            
+            .character-wrapper.position-right {
+                left: 80%;
+            }
+
+            .character-label {
+                padding: 6px 10px;
+                bottom: 12%;
+            }
+
+            .character-name {
+                font-size: 11px;
+            }
+
+            .character-status {
+                font-size: 9px;
+            }
+            
+            /* 移动端角色发言优化 */
+            .character-speech {
+                margin: 8px 0;
+                padding: 8px 10px;
+                font-size: 12px;
+                border-left-width: 3px;
+            }
+            
+            .character-name-tag {
+                font-size: 11px;
+                margin-bottom: 3px;
+            }
+            
+            .base-description {
+                margin-bottom: 12px;
+                font-size: 13px;
+            }
+            
+            /* 移动端角色标签颜色优化 */
+            .character-label.label-artist,
+            .character-label.label-programmer,
+            .character-label.label-designer {
+                border-width: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- 角色显示区域 -->
+        <div class="characters-container">
+            <div class="character-wrapper position-left">
+                <img id="char-designer" class="character hidden" src="" alt="策划师">
+                <div id="char-designer-label" class="character-label hidden label-designer">
+                    <div class="character-name">策划</div>
+                    <div class="character-status">信心十足</div>
+                </div>
+            </div>
+            <div class="character-wrapper position-center">
+                <img id="char-programmer" class="character hidden" src="" alt="程序员">
+                <div id="char-programmer-label" class="character-label hidden label-programmer">
+                    <div class="character-name">程序</div>
+                    <div class="character-status">信心十足</div>
+                </div>
+            </div>
+            <div class="character-wrapper position-right">
+                <img id="char-artist" class="character hidden" src="" alt="美术师">
+                <div id="char-artist-label" class="character-label hidden label-artist">
+                    <div class="character-name">美术</div>
+                    <div class="character-status">信心十足</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预加载所有角色状态图片 -->
+        <div class="preload-images">
+            <img src="img/img_char1_happy.png" alt="preload">
+            <img src="img/img_char1_doubt.png" alt="preload">
+            <img src="img/img_char1_sad.png" alt="preload">
+            <img src="img/img_char2_happy.png" alt="preload">
+            <img src="img/img_char2_doubt.png" alt="preload">
+            <img src="img/img_char2_sad.png" alt="preload">
+            <img src="img/img_char3_happy.png" alt="preload">
+            <img src="img/img_char3_doubt.png" alt="preload">
+            <img src="img/img_char3_sad.png" alt="preload">
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="date-display" id="current-date">2025年6月</div>
+            <div class="status-row">
+                <div class="status-label">剩余资金</div>
+                <div class="progress-container">
+                    <div class="progress-bar money-bar">
+                        <div class="progress-fill money-fill" id="money-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="progress-text" id="money">5,000,000</div>
+                </div>
+            </div>
+            <div class="status-row">
+                <div class="status-label">开发进度</div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-bar-dev">
+                        <div class="progress-fill progress-fill-dev" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text"><span id="progress">0</span>%</div>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- 主游戏内容 -->
+        <div id="game-content" class="game-content">
+            <button class="start-button" id="start-btn" onclick="startDevelopment()">开始开发</button>
+        </div>
+        
+        <!-- 事件面板 -->
+        <div id="event-section" class="event-panel hidden">
+            <div class="event-title" id="event-title"></div>
+            <div class="event-description" id="event-description"></div>
+            <div class="choices" id="choices"></div>
+        </div>
+        
+        <!-- 游戏结束面板 -->
+        <div id="game-over" class="game-over-panel hidden">
+            <h2 class="game-over-title" id="game-over-title"></h2>
+            <p class="game-over-message" id="game-over-message"></p>
+            <button class="restart-btn" onclick="restartGame()">重新开始</button>
+        </div>
+        
+        <!-- Tips 浮动提示 -->
+        <div id="tips" class="tips"></div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html> 
