@@ -63,7 +63,7 @@ function getEmotionFromConfidence(confidence) {
 function getStatusFromConfidence(confidence) {
     if (confidence >= 45) return { text: '信心十足', class: 'status-high' };
     if (confidence >= 20) return { text: '有点怀疑', class: 'status-medium' };
-    if (confidence >= 0) return { text: '爱不起来', class: 'status-medium' };
+    if (confidence >= 0) return { text: '爱不起来', class: 'status-low' };
     return { text: '信心不足', class: 'status-low' };
 }
 
